@@ -13,6 +13,8 @@ wp_enqueue_script( 'jquery' );
 // THE AJAX ADD ACTIONS
 add_action( 'wp_ajax_intersections', 'svc_intersections' );
 add_action( 'wp_ajax_nopriv_intersections', 'svc_intersections' ); // need this to serve non logged in users
+add_action( 'wp_ajax_intersections2', 'svc_intersections2' );
+add_action( 'wp_ajax_nopriv_intersections2', 'svc_intersections2' );
 add_action( 'wp_ajax_feedback', 'svc_feedback' );
 add_action( 'wp_ajax_nopriv_feedback', 'svc_feedback' ); // need this to serve non logged in users
 
@@ -90,6 +92,55 @@ function svc_intersections(){
   exit;// wordpress may print out a spurious zero without this - can be particularly bad if using json
 }
 
+// ************************************************************************************************
+function svc_intersections2(){
+  global $post;
+  header( "Content-Type: application/json" );
+
+  $query_args = array(
+    'post_type' => 'svc_intersection',
+    'svc_intersection_tags' => (isset($_GET['tag'])) ? $_GET['tag'] : null,
+    'posts_per_page' => -1,
+    'orderby' => 'menu_order',
+    'order' => 'asc'
+  );
+  query_posts($query_args);
+
+  $i = array();
+  if ( have_posts() ) : while ( have_posts() ) : the_post();
+    $j = array();
+    $j['lat'] = $lat = (double) get_post_meta($post->ID, 'lat', true);
+    $j['lng'] = $lng = (double) get_post_meta($post->ID, 'lng', true);
+    $j['name'] = get_the_title();
+    $j['id'] = $post->ID;
+    $args = array(
+      'status' => 'approve',
+      'post_id' => $post->ID
+    );
+    $comments = get_comments($args);
+    $comments_out = array();
+    foreach($comments as $c) {
+      $k = array();
+      $k['id'] = (int) $c->comment_ID;
+      $k['lat'] = $lat;
+      $k['lng'] = $lng;
+      $k['heading'] =  (double) get_comment_meta($c->comment_ID, 'heading', true);
+      $k['pitch'] =  (double) get_comment_meta($c->comment_ID, 'pitch', true);
+      $k['zoom'] = (int) get_comment_meta($c->comment_ID, 'zoom', true);
+      $k['desc'] = $c->comment_content;
+      $comments_out[] = $k;
+    }
+
+    $j['feedback'] = $comments_out;
+
+    $i[] = $j;
+  endwhile; endif;
+
+  $response = json_encode($i);
+  echo $response;
+  exit;// wordpress may print out a spurious zero without this - can be particularly bad if using json
+}
+// ****************************************************************************************************
 
 function svc_show_mapper($atts){
   extract( shortcode_atts( array(
