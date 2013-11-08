@@ -121,22 +121,26 @@ function svc_intersections(){
 function svc_show_mapper($atts){
 
   extract( shortcode_atts( array(
-      'background' => plugins_url('css/mapslider.png', __FILE__),
-      'mainstreet' => 'Fourth Avenue.',
+      'background' => false,
+      'mainstreet' => 'Fourth Avenue',
       'tag' => ''
       ), $atts ) );
 
+  // include markup
+  $template = file_get_contents( __DIR__ . '/fitzgerald_markup.html' );
+  $css = ($background) ? ' style="background-image:url('. $background .')"' : '' ;
+
+  $out = sprintf( $template, $css );
+
+  // localize fitzgerald scripts
   $localization = array(
     'backbone_url' => get_bloginfo('url') . "/wp-admin/admin-ajax.php?action=intersections&tag=" . $tag,
 
     'feedback_url' =>  get_bloginfo('url') . "/wp-admin/admin-ajax.php?action=feedback"
   );
 
-  // add fitzgerald scripts
   fitzgerald_scripts($localization);
 
-  $template = file_get_contents( __DIR__ . '/fitzgerald_markup.html' );
-  $out = sprintf( $template, $background );
 
   return $out;
 }
