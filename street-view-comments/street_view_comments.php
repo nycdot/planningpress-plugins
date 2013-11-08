@@ -21,7 +21,7 @@ function fitzgerald_scripts($localization) {
   wp_enqueue_script( 'gmaps', ('http://maps.googleapis.com/maps/api/js?sensor=false') );
 
   // this one right here needs to be localized!
-  wp_enqueue_script( 'fitzgerald-display', plugins_url( 'js/fitzgerald-display.js', __FILE__ ) );
+  wp_enqueue_script( 'fitzgerald-display', plugins_url( 'js/display.js', __FILE__ ) );
   wp_localize_script( 'fitzgerald-display', 'settings', $localization); //pass any php settings to javascript
   
   // ie conditional
@@ -134,13 +134,12 @@ function svc_show_mapper($atts){
 
   // localize fitzgerald scripts
   $localization = array(
+    'mainstreet' => $mainstreet,
     'backbone_url' => get_bloginfo('url') . "/wp-admin/admin-ajax.php?action=intersections&tag=" . $tag,
-
     'feedback_url' =>  get_bloginfo('url') . "/wp-admin/admin-ajax.php?action=feedback"
   );
 
   fitzgerald_scripts($localization);
-
 
   return $out;
 }
