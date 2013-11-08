@@ -124,18 +124,19 @@ class AttachmentsSearch extends Attachments
                 // we only want to check certain fields
                 foreach( $params['fields'] as $field )
                     if( isset( $potential_attachments[$i]->fields->$field ) )   // does the field exist?
-                        if( !$query || strpos( strtolower( $potential_attachments[$i]->fields->$field ),
+                        if( empty( $query ) || strpos( strtolower( $potential_attachments[$i]->fields->$field ),
                                     strtolower( $query ) ) !== false ) // does the value match?
-                            if( !is_null( $params['filetype'] ) && in_array( parent::get_mime_type( $potential_attachments[$i]->id ), $params['filetype'] ) )
+                            if( is_null( $params['filetype'] ) || ( !is_null( $params['filetype'] ) && in_array( parent::get_mime_type( $potential_attachments[$i]->id ), $params['filetype'] ) ) )
                                 $valid = true;
             }
             else
             {
                 // we want to check all fields
-                foreach( $potential_attachments[$i]->fields as $field_name => $field_value )
-                    if( !$query || strpos( strtolower( $field_value) , strtolower( $query ) ) !== false )
-                        if( !is_null( $params['filetype'] ) && in_array( parent::get_mime_type( $potential_attachments[$i]->id ), $params['filetype'] ) )
-                            $valid = true;
+	              if( isset( $potential_attachments[$i]->fields ) )
+                    foreach( $potential_attachments[$i]->fields as $field_name => $field_value )
+                        if( empty( $query ) || strpos( strtolower( $field_value) , strtolower( $query ) ) !== false )
+                            if( is_null( $params['filetype'] ) || ( !is_null( $params['filetype'] ) && in_array( parent::get_mime_type( $potential_attachments[$i]->id ), $params['filetype'] ) ) )
+                                $valid = true;
             }
 
             if( !$valid )
@@ -147,10 +148,9 @@ class AttachmentsSearch extends Attachments
         // limit to attachment ID if applicable
         if( $params['attachment_id'] )
         {
-            $total_potentials = count( $potential_attachments );
-            for( $i = 0; $i < $total_potentials; $i++ )
-                if( $potential_attachments[$i]->id != $params['attachment_id'] )
-                    unset( $potential_attachments[$i] );
+	          foreach( $potential_attachments as $key => $value )
+                if( $potential_attachments[$key]->id != $params['attachment_id'] )
+                    unset( $potential_attachments[$key] );
         }
 
         $this->results = array_values( $potential_attachments );

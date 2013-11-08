@@ -2,8 +2,8 @@
 Contributors: mc_jesse, crowdfavorite
 Tags: mailchimp, email, newsletter, signup, marketing, plugin, widget
 Requires at least: 2.8
-Tested up to: 3.2.1
-Stable tag: 1.2.6
+Tested up to: 3.6.1
+Stable tag: 1.3
 
 == Description ==
 
@@ -42,7 +42,7 @@ Or, if you are dropping it in between a bunch of HTML, use this:
 
 `<?php mailchimpSF_signup_form(); ?>`
 
-Where ever you want it to show up. 
+Where ever you want it to show up.
 
 Note: in some environments you will need to install the Exec_PHP plugin to use that method of display. It can be found here:
 http://wordpress.org/extend/plugins/exec-php/
@@ -65,6 +65,7 @@ Currently we have the plugin configured so it can be easily translated and the f
 * es_ES - Spanish in Spain (thanks to [Claudia Mansilla](http://cricava.com/) for contributing)
 * et_ET - Estonian in Estonia (thanks to [Helen Urbanik](http://www.motomaania.ee/) for contributing)
 * fr_FR - French in France (thanks to [Maxime Toulliou](http://www.maximetoulliou.com/) for contributing)
+* he_IL - Hebrew in Israel (thanks to [שגיב בית](http://www.sagive.co.il) for contributing)
 * hu_HU - Hungarian in Hungary (thanks to Okostobi for contributing)
 * it_IT - Italian in Italy (thanks to [Stefan Des](http://www.stefandes.com) for contributing)
 * ko_KR - Korean (thanks to 백선기 (SK Baek)  for contributing)
@@ -72,6 +73,7 @@ Currently we have the plugin configured so it can be easily translated and the f
 * nl_BE - Dutch (thanks to [Filip Stas](http://suddenelfilio.net/) for contributing)
 * pt_BR - Portuguese in Brazil (thanks to Maria Manoela Porto for contributing)
 * pt_PT - Portuguese in Portugal (thanks to [Tiago Faria](http://xroot.org) for contributing)
+* ro_RO - Romanian in Romania (thanks to Alexandru Armin Roșu for contributing)
 * ru_RU - Russian in the Russian Federation (thanks to [Илья](http://fatcow.com) for contributing)
 * sv_SE - Swedish in Sweden (thanks to [Sebastian Johnsson](http://www.agiley.se/) for contributing)
 * tr_TR - Turkish in Turkey (thanks to [Hakan E.](http://kazancexpert.com/) for contributing)
@@ -81,7 +83,10 @@ If your language is not listed above, feel free to create a translation. Here ar
 1. Copy "mailchimp_i18n-en_US.po" to "mailchimp_i18n-LANG_COUNTRY.po" - fill in LANG and COUNTRY with whatever you use for WPLANG in wp-config.php
 2. Grab a transalation editor. [POedit](http://www.poedit.net/) works for us
 3. Translate each line - if you need some context, just open up mailchimp.php and search for the line number or text
-4. Send it to us - api@mailchimp.com - and we'll test it and include it with our next release
+4. [Fork](http://help.github.com/fork-a-repo/) the [repository on github](https://github.com/crowdfavorite/wp-mailchimp)
+5. [Clone](http://help.github.com/remotes/#clone) the _develop_ branch
+6. Add the appropriately named files to the /po/ directory and edit the /readme.txt to include how you'd like to be attributed
+7. Make a [pull request](http://help.github.com/send-pull-requests/)
 
 
 == Frequently Asked Questions ==
@@ -101,10 +106,12 @@ To learn more, just check out our site: [MailChimp](http://mailchimp.com/feature
 Maybe! Look in the /po/ directory in our plugin package and see if your language is in there. If it is, great! If it is not, feel from to create one. Here are the basic steps:
 
 1. Copy "mailchimp_i18n-en_US.po" to "mailchimp_i18n-LANG_COUNTRY.po" - fill in LANG and COUNTRY with whatever you use for WPLANG in wp-config.php
-2. Grab a translation editor. [POedit](http://www.poedit.net/) works for us
-3. Translate each line - if you need some context, just open up mailchimp.php or mailchimp_widget.php and search for the line number or text
-4. Send it to us - api@mailchimp.com - and we'll test it and include it
-
+2. Grab a transalation editor. [POedit](http://www.poedit.net/) works for us
+3. Translate each line - if you need some context, just open up mailchimp.php and search for the line number or text
+4. [Fork](http://help.github.com/fork-a-repo/) the [repository on github](https://github.com/crowdfavorite/wp-mailchimp)
+5. [Clone](http://help.github.com/remotes/#clone) the _develop_ branch
+6. Add the appropriately named files to the /po/ directory and edit the /readme.txt to include how you'd like to be attributed
+7. Make a [pull request](http://help.github.com/send-pull-requests/)
 
 
 == Screenshots ==
@@ -117,13 +124,53 @@ Maybe! Look in the /po/ directory in our plugin package and see if your language
 
 == Upgrade Notice ==
 
-= 1.2.6 = 
+= 1.3 =
+Now using OAuth flow within plugin for user authentication
+
+Admin UI refresh
+
+= 1.2.11 =
+Merged pull request from https://github.com/headshift/wp-mailchimp adding additional translation strings.
+
+= 1.2.10 =
+Fixed submission error when apostrophes are present
+
+= 1.2.8=
+Fixes bug where entire phone numbers were only being deposited in the area code portion
+
+= 1.2.6 =
 Fixes major bug with "Settings" link on Plugins screen.
 
 = 1.2.5 =
 Added support for multiple interest groups, field formatting based on type and date picker.
 
 == Changelog ==
+
+= 1.3 =
+* Now using OAuth flow for user authentication
+* Admin UI refresh
+
+= 1.2.14 =
+* Add link to edit profile within error when duplicate signup occurs
+
+= 1.2.13 =
+* Fixed bug preventing address fields from submitting correctly.
+
+= 1.2.12 =
+* Update spanish language files (es_ES and es_MX)
+
+= 1.2.9 =
+* Fixed bug where multiple checkbox type interest groups were returning an invalid error
+* Fixed bug where assets were not enqueueing properly if the plugin directory was not set to 'mailchimp'. Now supports any directory name.
+
+= 1.2.8 =
+* Fixed bug where entire phone numbers were only being deposited in the area code portion
+
+= 1.2.7 =
+* CSS should now always load correctly on the front end
+* Adding Hebrew and Romanian language support
+* Updating translation contribution instructions
+* Tested version is now 3.3.1
 
 = 1.2.6 =
 * Fixed bug with "Settings" link appearing on all plugins (props Jason Lane)
@@ -144,10 +191,10 @@ Added support for multiple interest groups, field formatting based on type and d
 * Change mailchimpSF_where_am_i() to use plugins_url() in place of WP_PLUGIN_URL to take SSL into account when delivering assets (props John LeBlanc)
 * Update MCAPI wrapper to bring back PHP4 support (note: PHP 5.2 to be required starting with WordPress 3.2)
 
-= 1.2.2 = 
+= 1.2.2 =
 * Change MCAPI wrapper to use a more unique class name, v1.3 of the API, and a much lighter client library
 
-= 1.2.1 = 
+= 1.2.1 =
 * Fixed internationalization path bug.
 * Fixed instances where i18n functions weren't necessary in admin.
 * Added more strings to be translated.

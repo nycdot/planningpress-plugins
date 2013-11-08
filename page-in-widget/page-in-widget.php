@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Page_in_widget
- * @version 1.1
+ * @version 1.2
  */
 /*
   Plugin Name: Page in Widget
   Plugin URI: http://carl-fredrik.net/wordpress/page-in-widget.html
   Description: Displays a page content in a widget
-  Version: 1.1
+  Version: 1.2
   Author: Carl-Fredrik Herö
   Author URI: http://carl-fredrik.net
   License: GPL2
@@ -44,14 +44,19 @@ class page_in_widget_Widget extends WP_Widget {
 		extract($args);
 		$title = apply_filters('widget_title', $instance['title']);
 		$page_id = (int) $instance['page_id'];
+		// WPML compatibility
+		if ( function_exists('icl_object_id') ) {
+		     $page_id = icl_object_id($page_id, "page");
+		}
 		$more = (int) $instance['more'];
 
+		echo $before_widget;
+
 		if(!$page_id){
-			echo 'Page in widget:: No Page id set.';
+			echo 'Page in widget::No Page id set.';
+			echo $after_widget;
 			return;
 		}
-
-        echo $before_widget;
 
 		if ($title) {
 			echo $before_title . $title . $after_title;

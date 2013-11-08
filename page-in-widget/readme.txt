@@ -2,8 +2,8 @@
 Contributors: carlfredrik.hero
 Tags: page, widget
 Requires at least: 2.8
-Tested up to: 3.0.1
-Stable tag: 1.1
+Tested up to: 3.2
+Stable tag: 1.2
 
 A tiny plugin that displays a page content in a widget.
 
@@ -21,6 +21,12 @@ The output is filtered through the_content-filter which means that paragraph tag
 4. Drag the new widget to desired sidebar, choose a title for the widget and select the appropriate page.
 
 == Changelog ==
+
+= 1.2 =
+* Added support for WPML translation (thanks to <a href="http://wordpress.org/support/profile/altert">altert</a>)
+
+= 1.1.1 =
+* Added missing `echo $before_widget;`
 
 = 1.1 =
 * The plugin now consider the `<!--more-->` tag
