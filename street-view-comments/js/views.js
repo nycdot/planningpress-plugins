@@ -4,9 +4,19 @@ var Fitzgerald = Fitzgerald || {};
   // Setup the namespace to trigger/bind events
   _.extend(F, Backbone.Events);
 
+  locationUpdate = function(model) {
+    // console.log(this.name, 'model:', !!this.model, 'locationmodel', !!this.locationModel);
+
+    if (model) {
+      this.locationModel = model;
+      this.render();
+    }
+  }
+
   F.LocationTitleView = Backbone.View.extend({
     initialize: function(){
       var self = this;
+      self.name = 'LocationTitleView';
 
       // Allow override
       self.setTitle = self.options.setTitle || self.setTitle;
@@ -15,12 +25,8 @@ var Fitzgerald = Fitzgerald || {};
       F.on('locationupdatebyrouter', this.onLocationUpdate, this);
       F.on('locationupdatebygraph', this.onLocationUpdate, this);
     },
-    onLocationUpdate: function(model) {
-      if (model) {
-        this.locationModel = model;
-        this.render();
-      }
-    },
+    onLocationUpdate: locationUpdate,
+
     render: function(){
       this.setTitle(this.locationModel.get('name'));
     },
@@ -32,6 +38,9 @@ var Fitzgerald = Fitzgerald || {};
   F.StreetviewView = Backbone.View.extend({
     initialize: function(){
       var self = this;
+      self.name = 'StreetviewView';
+
+      // console.log( 'creating sv', self.$el, self.options );
 
       self.panorama = new google.maps.StreetViewPanorama(self.$el.get(0), self.options.panoOptions);
 
@@ -45,18 +54,18 @@ var Fitzgerald = Fitzgerald || {};
         F.trigger('locationupdatebystreetview', latLng.lat(), latLng.lng());
       });
 
+      // console.log('this!!!!', this);
+
       F.on('locationupdatebyslider', this.onLocationUpdate, this);
       F.on('locationupdatebyrouter', this.onLocationUpdate, this);
       F.on('locationupdatebygraph', this.onLocationUpdate, this);
       F.on('povupdatebyview', this.setPov, this);
     },
-    onLocationUpdate: function(model) {
-      if (model) {
-        this.locationModel = model;
-        this.render();
-      }
-    },
+
+    onLocationUpdate:locationUpdate,
+
     render: function() {
+      // console.log('rendering', this.locationModel.get('lat'), this.locationModel.get('lng'));
       this.setPosition(this.locationModel.get('lat'), this.locationModel.get('lng'));
       this.setPov(0, 0, 1);
     },
@@ -76,6 +85,7 @@ var Fitzgerald = Fitzgerald || {};
   F.FeedbackFormView = Backbone.View.extend({
     initialize: function(){
       var self = this;
+      self.name = 'FeedbackFormView'
 
       // Add hidden fields
       self.$el.append(
@@ -120,12 +130,9 @@ var Fitzgerald = Fitzgerald || {};
       F.on('locationupdatebygraph', this.onLocationUpdate, this);
       F.on('povupdatebystreetview', this.setPov, this);
     },
-    onLocationUpdate: function(model) {
-      if (model) {
-        this.locationModel = model;
-        this.render();
-      }
-    },
+
+    onLocationUpdate: locationUpdate,
+
     render: function(){
       $('input[name="lat"]').val(this.locationModel.get('lat'));
       $('input[name="lng"]').val(this.locationModel.get('lng'));
@@ -209,6 +216,8 @@ var Fitzgerald = Fitzgerald || {};
       self.$list = self.$('.dot-feedback');
       self.$nav = self.$('.dot-feedback-nav');
       self.topCommentIndex = 0;
+      self.name = 'FeedbackFormView';
+
 
       // Update the list if we move locations
       F.on('locationupdatebyslider', self.onLocationUpdate, self);
@@ -261,12 +270,9 @@ var Fitzgerald = Fitzgerald || {};
         }
       }
     },
-    onLocationUpdate: function(model) {
-      if (model) {
-        this.locationModel = model;
-        this.render();
-      }
-    },
+
+    onLocationUpdate: locationUpdate,
+
     render: function(){
       var self = this,
           feedbackList = self.locationModel.get('feedback'),
@@ -319,6 +325,7 @@ var Fitzgerald = Fitzgerald || {};
     initialize: function(){
       this.collection.bind('reset', this.render, this);
       this.collection.bind('change', this.render, this);
+      this.name = 'FeedbackActivityView';
     },
     render: function(){
       var self = this,
@@ -346,16 +353,14 @@ var Fitzgerald = Fitzgerald || {};
 
   F.YouarehereTooltipView = Backbone.View.extend({
     initialize: function(){
+      this.name = 'YouarehereTooltipView';
       F.on('locationupdatebyslider', this.hide, this);
       F.on('locationupdatebyrouter', this.onLocationUpdate, this);
       F.on('locationupdatebygraph', this.hide, this);
     },
-    onLocationUpdate: function(model) {
-      if (model) {
-        this.locationModel = model;
-        this.render();
-      }
-    },
+
+    onLocationUpdate: locationUpdate,
+
     render: function(){
       var percent = this.collection.indexOf(this.locationModel) / this.collection.length;
       this.$el.css('left', (percent*100) + '%').show();
@@ -367,6 +372,7 @@ var Fitzgerald = Fitzgerald || {};
 
   F.TooltipView = Backbone.View.extend({
     initialize: function(){
+      this.name = 'TooltipView';
       F.on('locationupdatebyslider', this.onLocationUpdate, this);
       F.on('locationupdatebyrouter', this.onLocationUpdate, this);
       F.on('locationupdatebygraph', this.onLocationUpdate, this);
@@ -393,9 +399,11 @@ var Fitzgerald = Fitzgerald || {};
   // The map slider view
   F.NavigatorView = Backbone.View.extend({
     initialize: function(){
+      this.name = 'NavigatorView';
+      // console.log('initing F.NavigatorView = Backbone.View.extend({')
+
       // Render thyself when the data shows up
       this.collection.bind('reset', this.render, this);
-
       F.on('locationupdatebyrouter', this.onLocationUpdate, this);
       F.on('locationupdatebygraph', this.onLocationUpdate, this);
     },
@@ -412,6 +420,8 @@ var Fitzgerald = Fitzgerald || {};
     render: function() {
       var self = this,
           max = self.collection.length-1;
+
+      // console.log('setting up sliders and such!');
 
       // Setup slider
       self.$el.slider({
