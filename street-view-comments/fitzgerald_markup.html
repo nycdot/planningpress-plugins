@@ -1,0 +1,31 @@
+  <div id="debug"></div>
+
+  <div id="dot-container">
+    <h3 class="dot-title"></h3>
+
+    <div id="dot-sv"></div>
+
+    <div class="dot-feedback-container">
+      <button id="dot-add-feedback">Add a Comment</button>
+      <form class="dot-survey-form">
+        <label class="dot-survey-form-label" for="dot-survey-desc">
+          A picture is worth a thousand words. <strong>Remember</strong>
+          to point Google Streetview directly at the issue you want to highlight.
+        </label>
+        <textarea id="dot-survey-desc" class="dot-survey-item" name="desc"></textarea>
+      </form>
+      <ul class="dot-feedback"></ul>
+      <div class="dot-feedback-nav">
+        <span class="dot-feedback-nav-prev"><a href="#">prev</a></span>
+        <span class="dot-feedback-nav-state"></span>
+        <span class="dot-feedback-nav-next"><a href="#">next</a></span>
+      </div>
+    </div>
+
+    <div class="dot-slider-container">
+      <div class="dot-tooltip dot-tooltip-youarehere">You Are Here</div>
+      <div class="dot-tooltip dot-tooltip-comments"></div>
+      <div class="dot-slider" style="background-image:url(%s)"></div>
+      <div class="dot-feedback-activity"></div>
+    </div>
+  </div>

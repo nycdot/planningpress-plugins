@@ -8,7 +8,33 @@ Author: Chris Abraham
 Author URI: http://cjyabraham.com
 */
 
-wp_enqueue_script( 'jquery' );
+// enqueue scripts. called in the shortcode handler (svc_show_mapper)
+function fitzgerald_scripts($localization) {
+  // javascript
+  wp_enqueue_script( 'jquery-ui-custom', plugins_url( 'js/lib/jquery-ui-1.8.21.custom.min.js' , __FILE__ ), array('jquery'), '1.8.21' );
+  wp_enqueue_script( 'jquery-sparkline', plugins_url( 'js/lib/jquery.sparkline-2.0.min.js' , __FILE__ ), array('jquery'). '2.0' );
+  wp_enqueue_script( 'json2', plugins_url( 'js/lib/json2.min.js' , __FILE__ ));
+  wp_enqueue_script( 'underscore', plugins_url( 'js/lib/underscore-1.3.3.min.js' , __FILE__ ), array(), '1.3.3' );
+  wp_enqueue_script( 'backbone', plugins_url( 'js/lib/backbone-0.9.2.min.js' , __FILE__ ), array(), '0.9.2' );
+  wp_enqueue_script( 'fitzgerald-routes', plugins_url( 'js/routes.js' , __FILE__ ) );
+  wp_enqueue_script( 'fitzgerald-views', plugins_url( 'js/views.js', __FILE__ ) );
+  wp_enqueue_script( 'gmaps', ('http://maps.googleapis.com/maps/api/js?sensor=false') );
+
+  // this one right here needs to be localized!
+  wp_enqueue_script( 'fitzgerald-display', plugins_url( 'js/fitzgerald-display.js', __FILE__ ) );
+  wp_localize_script( 'fitzgerald-display', 'settings', $localization); //pass any php settings to javascript
+  
+  // ie conditional
+  if (preg_match('/(?i)msie [1-8]/',$_SERVER['HTTP_USER_AGENT'])) {
+    wp_enqueue_script('html5shiv','http://html5shiv.googlecode.com/svn/trunk/html5.js');
+  }
+
+  // css
+  wp_enqueue_style( 'jquery-ui-custom-css', plugins_url( 'js/lib/jquery-ui-1.8.21.custom.css' , __FILE__ ) );
+  wp_enqueue_style( 'fitzgerald-css', plugins_url( 'css/style.css' , __FILE__ ) );
+  wp_enqueue_style( 'swanky-fonts', 'http://fonts.googleapis.com/css?family=Swanky+and+Moo+Moo|Shadows+Into+Light|Loved+by+the+King' );
+
+}
 
 // THE AJAX ADD ACTIONS
 add_action( 'wp_ajax_intersections', 'svc_intersections' );
@@ -143,136 +169,24 @@ function svc_intersections2(){
 // ****************************************************************************************************
 
 function svc_show_mapper($atts){
+
   extract( shortcode_atts( array(
       'background' => plugins_url('css/mapslider.png', __FILE__),
-      'mainstreet' => 'Broome St.',
+      'mainstreet' => 'Fourth Avenue.',
       'tag' => ''
       ), $atts ) );
 
-  $out = '<link rel="stylesheet" type="text/css" href="' . plugins_url( 'js/lib/jquery-ui-1.8.21.custom.css' , __FILE__ ) . '" />';
-  $out .= '<link rel="stylesheet" type="text/css" href="' . plugins_url( 'css/style.css' , __FILE__ ) . '" />';
-  $out .= <<<EOD
-  <link href='http://fonts.googleapis.com/css?family=Swanky+and+Moo+Moo|Shadows+Into+Light|Loved+by+the+King' rel='stylesheet' type='text/css'>
-  <!--[if IE]>
-    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-  <div id="debug"></div>
+  $localization = array(
+    'backbone_url' => get_bloginfo('url') . "/wp-admin/admin-ajax.php?action=intersections&tag=" . $tag,
 
-  <div id="dot-container">
-    <h3 class="dot-title"></h3>
+    'feedback_url' =>  get_bloginfo('url') . "/wp-admin/admin-ajax.php?action=feedback"
+  );
 
-    <div id="dot-sv"></div>
+  // add fitzgerald scripts
+  fitzgerald_scripts($localization);
 
-    <div class="dot-feedback-container">
-      <button id="dot-add-feedback">Add a Comment</button>
-      <form class="dot-survey-form">
-        <label class="dot-survey-form-label" for="dot-survey-desc">
-          A picture is worth a thousand words. <strong>Remember</strong>
-          to point Google Streetview directly at the issue you want to highlight.
-        </label>
-        <textarea id="dot-survey-desc" class="dot-survey-item" name="desc"></textarea>
-      </form>
-      <ul class="dot-feedback"></ul>
-      <div class="dot-feedback-nav">
-        <span class="dot-feedback-nav-prev"><a href="#">prev</a></span>
-        <span class="dot-feedback-nav-state"></span>
-        <span class="dot-feedback-nav-next"><a href="#">next</a></span>
-      </div>
-    </div>
-
-    <div class="dot-slider-container">
-      <div class="dot-tooltip dot-tooltip-youarehere">You Are Here</div>
-      <div class="dot-tooltip dot-tooltip-comments"></div>
-      <div class="dot-slider" style="background-image: url('$background');"></div>
-      <div class="dot-feedback-activity"></div>
-    </div>
-  </div>
-
-
-  <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-EOD;
-  $out .= '<script src="' . plugins_url( 'js/lib/jquery-ui-1.8.21.custom.min.js' , __FILE__ ) . '"></script>';
-  $out .= '<script src="' . plugins_url( 'js/lib/jquery.sparkline-2.0.min.js' , __FILE__ ) . '"></script>';
-  $out .= '<script src="' . plugins_url( 'js/lib/json2.min.js' , __FILE__ ) . '"></script>';
-  $out .= '<script src="' . plugins_url( 'js/lib/underscore-1.3.3.min.js' , __FILE__ ) . '"></script>';
-  $out .= '<script src="' . plugins_url( 'js/lib/backbone-0.9.2.min.js' , __FILE__ ) . '"></script>';
-
-  $out .= '<script src="' . plugins_url( 'js/routes.js' , __FILE__ ) . '"></script>';
-  $out .= '<script src="' . plugins_url( 'js/views.js', __FILE__ ) . '"></script>';
-
-  $out .= "\n<script>\n(function(F){\nBackbone.emulateHTTP = true;\n";
-  $out .= "F.LocationCollection = Backbone.Collection.extend({\n  url: '" . get_bloginfo('url') . "/wp-admin/admin-ajax.php?action=intersections&tag=" . $tag . "'\n});\n";
-  $out .= "F.FeedbackModel = Backbone.Model.extend({\n  url: '" . get_bloginfo('url') . "/wp-admin/admin-ajax.php?action=feedback'\n});\n";
-
-  $out .= <<<EODD
-  jQuery(function(){
-    // Disable caching for all ajax calls
-    jQuery.ajaxSetup ({
-      cache: false
-    });
-    var collection = new Fitzgerald.LocationCollection();
-
-    // Init the views
-    var mapSlider = new Fitzgerald.NavigatorView({
-      el: '.dot-slider', collection: collection
-    });
-    var tooltip = new Fitzgerald.TooltipView({
-      el: '.dot-tooltip-comments', collection: collection
-    });
-    var youarehere = new Fitzgerald.YouarehereTooltipView({
-      el: '.dot-tooltip-youarehere', collection: collection
-    });
-    var feedbackActivity = new Fitzgerald.FeedbackActivityView({
-      el: '.dot-feedback-activity', collection: collection
-    });
-    var feedbackList = new Fitzgerald.FeedbackListView({
-      el: '.dot-feedback-container',
-      colors: ['yellow', 'blue', 'magenta'],
-      collection: collection
-    });
-    var streetview = new Fitzgerald.StreetviewView({
-      el: '#dot-sv',
-      collection: collection,
-      panoOptions: {
-        position: new google.maps.LatLng(0, 0),
-        visible:true,
-        addressControl: false,
-        clickToGo: false,
-        scrollwheel: false,
-        linksControl: false,
-        disableDoubleClickZoom: false,
-        zoomControlOptions: {
-          style: google.maps.ZoomControlStyle.SMALL
-        }
-      }
-    });
-    var feedbackForm = new Fitzgerald.FeedbackFormView({
-      el: '.dot-survey-form',
-      showFormEl: '#dot-add-feedback',
-      collection: collection,
-      maxChars: 200
-    });
-
-    var locationTitle = new Fitzgerald.LocationTitleView({
-      el: '.dot-title',
-      setTitle: function(title) {
-        this.\$el.html('$mainstreet &amp; ' + title);
-      }
-    })
-
-    // Fetch the location records
-    collection.fetch({
-      success: function(intersections, res) {
-        // Set the width of the container to match the chart width exactly
-        var container = jQuery('#dot-container'),
-            exactWidth = Math.floor(container.width() / intersections.size()) * intersections.size();
-        container.width(exactWidth);
-      }
-    });
-  });
-  })(Fitzgerald);
-  </script>
-EODD;
+  $template = file_get_contents( __DIR__ . '/fitzgerald_markup.html' );
+  $out = sprintf( $template, $background );
 
   return $out;
 }
@@ -280,6 +194,7 @@ EODD;
 add_shortcode("street-view-comments", "svc_show_mapper");
 
 add_action( 'init', 'svc_create_post_type' );
+
 function svc_create_post_type() {
   register_post_type( 'svc_intersection',
                     array(
@@ -418,7 +333,6 @@ function svc_inner_custom_box_sm( $post ) {
   echo '<input type="checkbox" id="svc_label" name="svc_label" ' . $label . ' size="15" />';
 }
 
-
 /* When the post is saved, saves our custom data */
 function svc_save_postdata( $post_id ) {
   // verify if this is an auto save routine.
@@ -449,7 +363,6 @@ function svc_save_postdata( $post_id ) {
   update_post_meta($post_id, 'label', $mydata);
 }
 
-
 register_activation_hook( __FILE__, 'svc_activate' );
 
 function svc_activate() {
@@ -459,9 +372,8 @@ function svc_activate() {
   }
 }
 
-
 function svc_unused_meta_boxes() {
-remove_meta_box('commentstatusdiv','svc_intersection','normal'); // Comment Status
+  remove_meta_box('commentstatusdiv','svc_intersection','normal'); // Comment Status
 }
 
 add_action('admin_head', 'svc_unused_meta_boxes');
