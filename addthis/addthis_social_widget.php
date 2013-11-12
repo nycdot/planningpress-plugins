@@ -23,7 +23,7 @@
 * Plugin Name: AddThis Social Bookmarking Widget
 * Plugin URI: http://www.addthis.com
 * Description: Help your visitor promote your site! The AddThis Social Bookmarking Widget allows any visitor to bookmark your site easily with many popular services. Sign up for an AddThis.com account to see how your visitors are sharing your content--which services they're using for sharing, which content is shared the most, and more. It's all free--even the pretty charts and graphs.
-* Version: 3.5.3
+* Version: 3.5.4
 *
 * Author: The AddThis Team
 * Author URI: http://www.addthis.com/blog
@@ -46,7 +46,7 @@ function addthis_early(){
 
 
 define( 'addthis_style_default' , 'fb_tw_p1_sc');
-define( 'ADDTHIS_PLUGIN_VERSION' , '3.5.2');
+define( 'ADDTHIS_PLUGIN_VERSION' , '3.5.4');
 define( 'ADDTHIS_PRODUCT_VERSION' , 'wpp');
 define( 'ADDTHIS_ATVERSION', '300');
 define( 'ADDTHIS_ATVERSION_MANUAL_UPDATE', -1);
@@ -83,23 +83,23 @@ $atversion = is_array($addthis_options) && array_key_exists('atversion_reverted'
 
 $addthis_new_styles = array(
 
-    'fb_tw_p1_sc' => array( 'src' => '<div class="addthis_toolbox addthis_default_style " %s  ><a class="addthis_button_facebook_like" fb:like:layout="button_count"></a><a class="addthis_button_tweet"></a><a class="addthis_button_pinterest_pinit"></a><a class="addthis_counter addthis_pill_style"></a></div>' , 'img' => 'horizontal_share_rect.png' , 'name' => 'Like, Tweet, +1, Share', 'above' => '', 'below' => ''
+    'fb_tw_p1_sc' => array( 'src' => '<div class="addthis_toolbox addthis_default_style " %1$s  ><a class="addthis_button_facebook_like" fb:like:layout="button_count"></a><a class="addthis_button_tweet"></a><a class="addthis_button_pinterest_pinit"></a><a class="addthis_counter addthis_pill_style"></a></div>' , 'img' => 'horizontal_share_rect.png' , 'name' => 'Like, Tweet, +1, Share', 'above' => '', 'below' => ''
     ), // facebook tweet plus 1 share counter
-    'large_toolbox' => array( 'src' =>  '<div class="addthis_toolbox addthis_default_style addthis_32x32_style" %s ><a class="addthis_button_facebook"></a><a class="addthis_button_twitter"></a><a class="addthis_button_email"></a><a class="addthis_button_pinterest_share"></a><a class="addthis_button_compact"></a><a class="addthis_counter addthis_bubble_style"></a></div>', 'img' => 'toolbox-large.png', 'name' => 'Large Toolbox', 'above' => 'hidden ', 'below' => 'hidden'
+    'large_toolbox' => array( 'src' =>  '<div class="addthis_toolbox addthis_default_style addthis_32x32_style" %1$s ><a class="addthis_button_facebook"></a><a class="addthis_button_twitter"></a><a class="addthis_button_email"></a><a class="addthis_button_pinterest_share"></a><a class="addthis_button_compact"></a><a class="addthis_counter addthis_bubble_style"></a></div>', 'img' => 'toolbox-large.png', 'name' => 'Large Toolbox', 'above' => 'hidden ', 'below' => 'hidden'
     ), // 32x32
-    'small_toolbox' => array( 'src' =>  '<div class="addthis_toolbox addthis_default_style addthis_" %s ><a class="addthis_button_facebook"></a><a class="addthis_button_twitter"></a><a class="addthis_button_email"></a><a class="addthis_button_pinterest_share"></a><a class="addthis_button_compact"></a><a class="addthis_counter addthis_bubble_style"></a></div>', 'img' => 'toolbox-small.png', 'name' => 'Small Toolbox', 'above' => 'hidden ', 'below' => '' 
+    'small_toolbox' => array( 'src' =>  '<div class="addthis_toolbox addthis_default_style addthis_" %1$s ><a class="addthis_button_facebook"></a><a class="addthis_button_twitter"></a><a class="addthis_button_email"></a><a class="addthis_button_pinterest_share"></a><a class="addthis_button_compact"></a><a class="addthis_counter addthis_bubble_style"></a></div>', 'img' => 'toolbox-small.png', 'name' => 'Small Toolbox', 'above' => 'hidden ', 'below' => '' 
     ), // 32x32
-    'plus_one_share_counter' => array( 'src' => '<div class="addthis_toolbox addthis_default_style" %s ><a class="addthis_button_google_plusone" g:plusone:size="medium" ></a><a class="addthis_counter addthis_pill_style"></a></div>', 'img' => 'plusone-share.gif', 'name' => 'Plus One and Share Counter', 'above'=> 'hidden', 'below'=>'hidden' , 'defaultHide' => true 
+    'plus_one_share_counter' => array( 'src' => '<div class="addthis_toolbox addthis_default_style" %1$s ><a class="addthis_button_google_plusone" g:plusone:size="medium" ></a><a class="addthis_counter addthis_pill_style"></a></div>', 'img' => 'plusone-share.gif', 'name' => 'Plus One and Share Counter', 'above'=> 'hidden', 'below'=>'hidden' , 'defaultHide' => true 
     ), // +1
-    'small_toolbox_with_share' => array( 'src' =>  '<div class="addthis_toolbox addthis_default_style " %s ><a href="//addthis.com/bookmark.php?v='.$atversion.'&amp;username=xa-4d2b47597ad291fb" class="addthis_button_compact">Share</a><span class="addthis_separator">|</span><a class="addthis_button_preferred_1"></a><a class="addthis_button_preferred_2"></a><a class="addthis_button_preferred_3"></a><a class="addthis_button_preferred_4"></a></div>', 'img' => 'small-toolbox.jpg', 'name' => 'Small Toolbox with Share first', 'above' => '', 'below' => 'hidden' , 'defaultHide' => true
+    'small_toolbox_with_share' => array( 'src' =>  '<div class="addthis_toolbox addthis_default_style " %1$s ><a href="//addthis.com/bookmark.php?v='.$atversion.'&amp;username=xa-4d2b47597ad291fb" class="addthis_button_compact">Share</a><span class="addthis_separator">|</span><a class="addthis_button_preferred_1"></a><a class="addthis_button_preferred_2"></a><a class="addthis_button_preferred_3"></a><a class="addthis_button_preferred_4"></a></div>', 'img' => 'small-toolbox.jpg', 'name' => 'Small Toolbox with Share first', 'above' => '', 'below' => 'hidden' , 'defaultHide' => true
     ), // Plus sign share | four buttons
-    'fb_tw_sc' => array( 'src' => '<div class="addthis_toolbox addthis_default_style " %s  ><a class="addthis_button_facebook_like" fb:like:layout="button_count"></a><a class="addthis_button_tweet"></a><a class="addthis_counter addthis_pill_style"></a></div>' , 'img' => 'fb-tw-sc.jpg' , 'name' => 'Like, Tweet, Counter', 'above' => 'hidden', 'below' => 'hidden', 'defaultHide' => true
+    'fb_tw_sc' => array( 'src' => '<div class="addthis_toolbox addthis_default_style " %1$s  ><a class="addthis_button_facebook_like" fb:like:layout="button_count"></a><a class="addthis_button_tweet"></a><a class="addthis_counter addthis_pill_style"></a></div>' , 'img' => 'fb-tw-sc.jpg' , 'name' => 'Like, Tweet, Counter', 'above' => 'hidden', 'below' => 'hidden', 'defaultHide' => true
     ), // facebook tweet share counter
-    'simple_button' => array('src' => '<div class="addthis_toolbox addthis_default_style " %s><a href="//addthis.com/bookmark.php?v='.$atversion.'&amp;username=xa-4d2b47f81ddfbdce" class="addthis_button_compact">Share</a></div>', 'img' => 'share.jpg', 'name' => 'Share Button', 'above' => 'hidden ', 'below' => 'hidden', 'defaultHide' => true
+    'simple_button' => array('src' => '<div class="addthis_toolbox addthis_default_style " %1$s><a href="//addthis.com/bookmark.php?v='.$atversion.'&amp;username=xa-4d2b47f81ddfbdce" class="addthis_button_compact">Share</a></div>', 'img' => 'share.jpg', 'name' => 'Share Button', 'above' => 'hidden ', 'below' => 'hidden', 'defaultHide' => true
     ), // Plus sign share
-    'button' => array( 'src' => '<div><a class="addthis_button" href="//addthis.com/bookmark.php?v='.$atversion.'" %s><img src="//cache.addthis.com/cachefly/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a></div>', 'img' => 'horizontal_share.png', 'name' => 'Classic Share Button', 'above' => 'hidden ', 'below' => 'hidden'
+    'button' => array( 'src' => '<div><a class="addthis_button" href="//addthis.com/bookmark.php?v='.$atversion.'" %1$s><img src="//cache.addthis.com/cachefly/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a></div>', 'img' => 'horizontal_share.png', 'name' => 'Classic Share Button', 'above' => 'hidden ', 'below' => 'hidden'
     ), // classic
-    'share_counter' => array( 'src' => '<div class="addthis_toolbox addthis_default_style " %s  ><a class="addthis_counter"></a></div>', 'img' => 'share_counter.png', 'name' => 'Share Counter', 'above' => 'hidden ', 'below' => 'hidden' , 'defaultHide' => true
+    'share_counter' => array( 'src' => '<div class="addthis_toolbox addthis_default_style " %1$s  ><a class="addthis_counter"></a></div>', 'img' => 'share_counter.png', 'name' => 'Share Counter', 'above' => 'hidden ', 'below' => 'hidden' , 'defaultHide' => true
     ),
 );
 
@@ -380,69 +380,69 @@ function addthis_custom_toolbox($options, $url, $title)
         $outerClasses .= ' addthis_32x32_style';
 
     if (isset($options['type']) && $options['type'] != 'custom_string') {
-	    $button = '<div class="'.$outerClasses.'" '.$identifier.' >'; 
-	    
-	    if (isset($options['addthis_options']) && $options['addthis_options'] != "") {
-	    	$addthis_options = split(',', $options['addthis_options']);
-	    	foreach ($addthis_options as $option) {
-	            $option = trim($option);  
-	            if ($option != 'more') {
-	                $button .= '<a class="addthis_button_'.$option.'"></a>';
-	            }
-	        }
-	    }
-	    else if (isset($options['services']) ) {
-	        $services = explode(',', $options['services']);
-	        foreach ($services as $service)
-	        {
-	            $service = trim($service);
-	            if ($service == 'more' || $service == 'compact') {
-	            	if (isset($options['type']) && $options['type'] != 'fb_tw_p1_sc') {
-	            		$button .= '<a class="addthis_button_compact"></a>';
-	            	}
-	            }
-	            else if ($service == 'counter') {
-	            	if (isset($options['type']) && $options['type'] == 'fb_tw_p1_sc') {
-	            		$button .= '<a class="addthis_counter addthis_pill_style"></a>';
-	            	}
-	            	else {
-	            		$button .= '<a class="addthis_counter addthis_bubble_style"></a>';
-	            	}
-	            }
-	            else if ($service == 'google_plusone') {
-	            	$button .= '<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>';
-	            }
-	            else
-	                $button .= '<a class="addthis_button_'.strtolower($service).'"></a>';
-	        }
-	    }
+        $button = '<div class="'.$outerClasses.'" '.$identifier.' >'; 
+        
+        if (isset($options['addthis_options']) && $options['addthis_options'] != "") {
+            $addthis_options = split(',', $options['addthis_options']);
+            foreach ($addthis_options as $option) {
+                $option = trim($option);  
+                if ($option != 'more') {
+                    $button .= '<a class="addthis_button_'.$option.'"></a>';
+                }
+            }
+        }
+        else if (isset($options['services']) ) {
+            $services = explode(',', $options['services']);
+            foreach ($services as $service)
+            {
+                $service = trim($service);
+                if ($service == 'more' || $service == 'compact') {
+                    if (isset($options['type']) && $options['type'] != 'fb_tw_p1_sc') {
+                        $button .= '<a class="addthis_button_compact"></a>';
+                    }
+                }
+                else if ($service == 'counter') {
+                    if (isset($options['type']) && $options['type'] == 'fb_tw_p1_sc') {
+                        $button .= '<a class="addthis_counter addthis_pill_style"></a>';
+                    }
+                    else {
+                        $button .= '<a class="addthis_counter addthis_bubble_style"></a>';
+                    }
+                }
+                else if ($service == 'google_plusone') {
+                    $button .= '<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>';
+                }
+                else
+                    $button .= '<a class="addthis_button_'.strtolower($service).'"></a>';
+            }
+        }
     
-	    if (isset($options['preferred']) && is_numeric($options['preferred']))
-	    {
-	        for ($a = 1; $a <= $options['preferred']; $a++)
-	        {
-	            $button .= '<a class="addthis_button_preferred_'.$a.'"></a>';
-	        }
-	    }
+        if (isset($options['preferred']) && is_numeric($options['preferred']))
+        {
+            for ($a = 1; $a <= $options['preferred']; $a++)
+            {
+                $button .= '<a class="addthis_button_preferred_'.$a.'"></a>';
+            }
+        }
 
-	    if (isset($options['more']) && $options['more'] == true)
-	    {
-	            $button .= '<a class="addthis_button_compact"></a>';
-	    }
+        if (isset($options['more']) && $options['more'] == true)
+        {
+                $button .= '<a class="addthis_button_compact"></a>';
+        }
 
-	    if (isset($options['counter']) && ($options['counter'] != "") && ($options['counter'] !== false))
-	    {
-	        if ($options['counter'] === true)
-	        {  //no style was specified
-	           $button .= '<a class="addthis_counter"></a>';
-	        }
-	        else
-	        {  //a specific style was specified such as pill_style or bubble_style
-	            $button .= '<a class="addthis_counter addthis_'.$options['counter'].'"></a>';
-	        }
-	    }
-	    
-	    $button .= '</div>';
+        if (isset($options['counter']) && ($options['counter'] != "") && ($options['counter'] !== false))
+        {
+            if ($options['counter'] === true)
+            {  //no style was specified
+               $button .= '<a class="addthis_counter"></a>';
+            }
+            else
+            {  //a specific style was specified such as pill_style or bubble_style
+                $button .= '<a class="addthis_counter addthis_'.$options['counter'].'"></a>';
+            }
+        }
+        
+        $button .= '</div>';
     }
 
     return $button;
@@ -1468,7 +1468,7 @@ function addthis_display_social_widget($content, $filtered = true, $below_excerp
         }
     	elseif( $options['above'] == 'custom_string')
         {
-            $custom = preg_replace( '/<\s*div\s*/', '<div %s ', $options['above_custom_string'] );
+            $custom = preg_replace( '/<\s*div\s*/', '<div %1$s ', $options['above_custom_string'] );
             $above = apply_filters('addthis_above_content', $custom);
         }
     }
@@ -1508,7 +1508,7 @@ function addthis_display_social_widget($content, $filtered = true, $below_excerp
         }
     	elseif( $options['below'] == 'custom_string')
         {
-            $custom = preg_replace( '/<\s*div\s*/', '<div %s ', $options['below_custom_string'] );
+            $custom = preg_replace( '/<\s*div\s*/', '<div %1$s ', $options['below_custom_string'] );
             $below = apply_filters('addthis_below_content', $custom);
         }
     }
@@ -1909,14 +1909,14 @@ function addthis_options_page_scripts()
     $imgLocationBase = apply_filters( 'at_files_uri',  plugins_url( '' , basename(dirname(__FILE__)))) . '/addthis/img/'  ;
 	$imgLocationBase = apply_filters( 'addthis_files_uri',  plugins_url( '' , basename(dirname(__FILE__)))) . '/addthis/img/'  ;
     wp_enqueue_script( 'addthis_options_page_script',  $script_location , array('jquery-ui-tabs', 'thickbox'  ));  
-    wp_enqueue_script( 'addthis_core', 'https://cache.addthiscdn.com/site/core/js/core-1.1.1.js');
-    wp_enqueue_script( 'addthis_lr', 'https://cache.addthiscdn.com/www/20130509092329/js/lr.js');
-    wp_enqueue_script('addthis_qtip_script', 'https://cache.addthiscdn.com/lib/jquery/plugins/qtip-1.0.0-rc2/jquery.qtip.min.js');
-    wp_enqueue_script('addthis_ui_script', 'https://cache.addthiscdn.com/www/20130424124136/js/shared/jqueryui.sortable.js');
-    wp_enqueue_script( 'addthis_selectbox', 'https://cache.addthiscdn.com/www/20130509092329/js/shared/jquery.selectBoxIt.min.js');
-    wp_enqueue_script( '', 'https://cache.addthiscdn.com/www/20130509092329/js/shared/jquery.messagebox.js');
-    wp_enqueue_script( '', 'https://cache.addthiscdn.com/www/20130509092329/js/shared/jquery.atjax.js');
-    wp_enqueue_script( 'addthis_lodash_script', 'https://cache.addthiscdn.com/www/20130424124136/js/shared/lodash-0.10.0.js');
+    wp_enqueue_script( 'addthis_core',plugins_url( '', basename(dirname(__FILE__)) ) . '/addthis/js/core-1.1.1.js');
+    wp_enqueue_script( 'addthis_lr', plugins_url( '', basename(dirname(__FILE__)) ) .'/addthis/js/lr.js');
+    wp_enqueue_script('addthis_qtip_script', plugins_url( '', basename(dirname(__FILE__)) ) .'/addthis/js/jquery.qtip.min.js');
+    wp_enqueue_script('addthis_ui_script', plugins_url( '', basename(dirname(__FILE__)) ) .'/addthis/js/jqueryui.sortable.js');
+    wp_enqueue_script( 'addthis_selectbox',plugins_url( '', basename(dirname(__FILE__)) ) . '/addthis/js/jquery.selectBoxIt.min.js');
+    wp_enqueue_script( '', plugins_url( '', basename(dirname(__FILE__)) ) .'/addthis/js/jquery.messagebox.js');
+    wp_enqueue_script( '', plugins_url( '', basename(dirname(__FILE__)) ) .'/addthis/js/jquery.atjax.js');
+    wp_enqueue_script( 'addthis_lodash_script', plugins_url( '', basename(dirname(__FILE__)) ) .'/addthis/js/lodash-0.10.0.js');
 	wp_enqueue_script('addthis_services_script', plugins_url( '', basename(dirname(__FILE__)) ) . '/addthis/js/gtc-sharing-personalize.js');
     wp_enqueue_script('addthis_service_script', plugins_url( '', basename(dirname(__FILE__)) ) . '/addthis/js/gtc.cover.js');
     wp_localize_script( 'addthis_options_page_script', 'addthis_option_params', array('wp_ajax_url'=> admin_url('admin-ajax.php'), 'addthis_validate_action' => 'validate_addthis_api_credentials', 'img_base' => $imgLocationBase) );
@@ -1931,7 +1931,7 @@ function addthis_options_page_style()
     wp_enqueue_style( 'addthis_options_page_style', $style_location);
     wp_enqueue_style( 'thickbox' );
     wp_enqueue_style( 'addthis_services_style', plugins_url( '', basename(dirname(__FILE__)) ) . '/addthis/css/gtc.sharing-personalize.css' );
-    wp_enqueue_style('addthis_bootstrap_style', 'https://cache.addthiscdn.com/www/20130424124136/style/shared/bootstrap.css');
+    wp_enqueue_style('addthis_bootstrap_style', plugins_url( '', basename(dirname(__FILE__)) ) . '/addthis/css/bootstrap.css');
     wp_enqueue_style( 'addthis_widget', 'https://ct1.addthis.com/static/r07/widget114.css');
     wp_enqueue_style( 'addthis_widget_big', 'https://ct1.addthis.com/static/r07/widgetbig056.css');
 }
@@ -2406,89 +2406,6 @@ if (! function_exists('get_first_twitter_username'))
     }
 }
 
-/*
- * hook for after title
- */
-function addthis_display_after_title($title, $filtered = true) {
-	global  $addthis_styles, $addthis_new_styles, $post;
-    $styles = array_merge($addthis_styles, $addthis_new_styles);
-
-
-    if ( isset($_GET['preview']) &&  $_GET['preview'] == 1 && $options = get_transient('addthis_settings') )
-        $preview = true;
-    else
-        $options = get_option('addthis_settings');
-    
-    $custom_fields = get_post_custom($post->ID);
-    if (isset ($custom_fields['addthis_exclude']) && $custom_fields['addthis_exclude'][0] ==  'true')
-        $display = false;
-    else
-    	$display = true;
-    
-    $display = apply_filters('addthis_post_exclude', $display);
-    
-    remove_filter('wp_trim_excerpt', 'addthis_remove_tag', 9, 2);
-    remove_filter('get_the_excerpt', 'addthis_late_widget');
-    
-    $url = get_permalink();
-   
-    $url_above =  "addthis:url='$url' ";
-    $url_above .= "addthis:title='". esc_attr( $title) ." '";  
-    $above = '';
-    
-    if ( isset( $options['above'] ) &&  $options['above'] != 'none' && $options['above'] != 'disable' && $display  )
-    {
-        if (isset ($styles[$options['above']]))
-        {
-            $above = apply_filters('addthis_above_content',  $styles[$options['above']]['src']);
-        }
-        elseif ($options['above'] == 'custom')
-        {
-            $aboveOptions['size'] = $options['above_custom_size'];
-            if ($options['above_do_custom_services']) 
-                $aboveOptions['services'] = $options['above_custom_services'];
-            if ($options['above_do_custom_preferred']) 
-                $aboveOptions['preferred'] = $options['above_custom_preferred'];
-            $aboveOptions['more'] = $options['above_custom_more'];
-            $aboveOptions['addthis_options'] = $options['addthis_options'];
-            $above = apply_filters('addthis_above_content',  addthis_custom_toolbox($aboveOptions, $url, $title) );
-        }
-        
-        if (isset ($options['above_chosen_list']) && strlen($options['above_chosen_list']) != 0) {
-        	if (isset ($options['above']) && $options['above'] == 'large_toolbox') {
-        		$aboveOptions['size'] = '32';
-        	}
-        	elseif (isset ($options['above']) && $options['above'] == 'small_toolbox') {
-        		$aboveOptions['size'] = '16';
-        	}
-        	$aboveOptions['type'] = $options['above'];
-        	$aboveOptions['services'] = $options['above_chosen_list'];
-        	$aboveOptions['addthis_options'] = $options['addthis_options'];
-        	$above = apply_filters('addthis_above_content',  addthis_custom_toolbox($aboveOptions, $url, $title) );
-        }
-    }
-    elseif ($display)
-        $above = apply_filters('addthis_above_content','' );
-    else
-        $above = '';
-        
-    if ($display) 
-    {
-    	if ( isset($above) )
-        {
-        	if (in_the_loop() && $title == $post->post_title) {
-	            if ($options['above'] == 'custom')
-	                $title .= $above;
-	            else
-	                $title .= sprintf($above, $url_above);
-        	}
-        }
-        if ($filtered == true)
-            add_filter('wp_trim_excerpt', 'addthis_remove_tag', 11, 2);
-    }
-    
-    return $title;
-}
 
 require_once('addthis_post_metabox.php');
 

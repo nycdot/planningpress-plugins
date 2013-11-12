@@ -158,7 +158,8 @@ function mediatags_cloud( $args='' ) {
 }
 
 function get_the_mediatags( $id = 0 ) {
-	return apply_filters( ‘get_the_mediatags’, get_the_terms( $id, MEDIA_TAGS_TAXONOMY ) );
+	// http://wordpress.org/support/topic/plugin-media-tags-mediatags_template_functionsphp-fix?replies=3
+	return apply_filters( 'get_the_mediatags', get_the_terms( $id, MEDIA_TAGS_TAXONOMY ) );
 }
 
 function mediatags_description( $id = 0 ) {

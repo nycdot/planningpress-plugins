@@ -2,9 +2,9 @@
 Contributors: Paul Menard
 Donate link: http://www.codehooligans.com/donations/
 Tags: media-tags, media tags, media, tags, images, attachments, documents, taxonomy, shortcode, permalinks, role management, bulk admin, gallery
-Requires at least: 3.0.1
-Tested up to: 3.1
-Stable tag: 3.0.4
+Requires at least: 3.5
+Tested up to: 3.6.1
+Stable tag: 3.1.2.1
 
 == Description ==
 
@@ -54,17 +54,43 @@ The FAQ section has been written as a Help section within the plugin's settings 
 
 == Changelog == 
 
-= 3.0.3 =
-2010-12-16
-* Fixed code to allow searches within a media-tags term. For example your side http://www.somesite.com/media-tags/flags?s=xxx would return results from all media-tags terms not just within the 'flags' term. So had to add back in some of the filters for the Where and Join of the query (yuk!). The search is applied in default WordPress fashion to the attachment title an description fields. Will try to include the alt text and caption field in some later release. 
+= 3.1.2.1=
+2013-10-24
+* Mainly bug fixes release
+* Corrected use of deprecated use of 'get_editable_user_ids'.
+* Corrected use of PHP split() function which is deprecated in new versions of PHP. replaced with explode. 
+* Corrected issue reported effecting expanded menus and menu icons on non-Media-Tags screens
 
-Thanks to Carlos for commenting on my blog and bringing this to my attention. You can read the thread of comments here.  http://www.codehooligans.com/projects/wordpress/media-tags/#comment-71043
+= 3.1.2 = 
+2013-03-20
+* Bug fix for sanitizing Media-Tags slug. 
+http://wordpress.org/support/topic/media-tags-slug-sanitizing-not-working-on-special-characters
 
-* Corrected an issue with the compare of the global 'wp_version'. Was using the PHP function floatval but this return inaccurate value when the version is something like '3.0.x'. Now using the PHP function version_compare. 
+= 3.1.1 = 
+2012-12-14
+* Bug fixes for WordPress 3.5 Media popup screen. Removed Media-Tags logic. Will add in filtering once new code is converted to new media system. 
 
-* Within in the Media > Library enabled search to filter listing by Media-Tags. Select the Media-Tag term from the dropdown. Then enter something into the search and submit. 
+= 3.1 = 
+2012-12-14
+* Bug fixes for WordPress 3.5 Bulk Media-Tags management screen
 
-* No other known bugs at this time. 
+= 3.0.5 =
+2011-08-03
+* Bug fixes. All bug fixes were received via posts from the wordpress.org forums by alx359. Thanks to alx359 for all the details provided including plugin filename and line numbers. 
+
+http://wordpress.org/support/topic/plugin-media-tags-library-bulk-delete-tags-fix?replies=2
+http://wordpress.org/support/topic/plugin-media-tags-get_attachments_by_media_tags-twice-offset-fix?replies=2
+http://wordpress.org/support/topic/plugin-media-tags-media-library-inline-fix?replies=5
+http://wordpress.org/support/topic/plugin-media-tags-row-count-fix?replies=3
+http://wordpress.org/support/topic/plugin-media-tags-some-visual-aid-tags-being-applied-fix?replies=1
+http://wordpress.org/support/topic/media-library-diagonal-alignment-fix?replies=1
+http://wordpress.org/support/topic/plugin-media-tags-usabilility-fix?replies=4
+
+coming in the next release:
+
+1. Bulk Admin on the upload panel. I know this is a much requested item.
+2. Ability to show all untagged items. Basically show all attachments without media-tags. 
+
 
 = 3.0.4 =
 * Bugs fixed
@@ -82,8 +108,18 @@ Added a new section to the Settings panel. This new section allow you to complet
 Many users have been requesting a way to display or filter all untagged media. This is coming in the next release. This release is mostly bug fixes. 
 
 = 3.0.3 =
+2010-12-16
 * More bugs fixed. 
 
+* Fixed code to allow searches within a media-tags term. For example your side http://www.somesite.com/media-tags/flags?s=xxx would return results from all media-tags terms not just within the 'flags' term. So had to add back in some of the filters for the Where and Join of the query (yuk!). The search is applied in default WordPress fashion to the attachment title an description fields. Will try to include the alt text and caption field in some later release. 
+
+Thanks to Carlos for commenting on my blog and bringing this to my attention. You can read the thread of comments here.  http://www.codehooligans.com/projects/wordpress/media-tags/#comment-71043
+
+* Corrected an issue with the compare of the global 'wp_version'. Was using the PHP function floatval but this return inaccurate value when the version is something like '3.0.x'. Now using the PHP function version_compare. 
+
+* Within in the Media > Library enabled search to filter listing by Media-Tags. Select the Media-Tag term from the dropdown. Then enter something into the search and submit. 
+
+* No other known bugs at this time. 
 
 = 3.0.2 =
 2010-12-07

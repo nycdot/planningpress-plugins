@@ -38,7 +38,8 @@ function media_tags_bulk_action_callback() {
 		{
 			foreach($tags_tmp_array as $idx => $tag_val)
 			{
-				$tag_slug = sanitize_title_with_dashes($tag_val);
+				//$tag_slug = sanitize_title_with_dashes($tag_val);
+				$tag_slug = sanitize_title($tag_val);
 
 				if ( ! ($id = term_exists( $tag_slug, MEDIA_TAGS_TAXONOMY ) ) )
 				{
@@ -96,7 +97,9 @@ function media_tags_bulk_action_callback() {
 				}
 			}
 		}
-		else if ($media_tags_action == "media_tags_assign")
+		//else if ($media_tags_action == "media_tags_assign")
+		// http://wordpress.org/support/topic/plugin-media-tags-library-bulk-delete-tags-fix?replies=2
+		else if ($media_tags_action == "media_tags_remove")
 		{
 			foreach($select_media_items as $select_media_item_id)
 			{

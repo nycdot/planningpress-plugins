@@ -13,6 +13,30 @@ if ( is_admin() )
 else
 	require_once WPCF7_PLUGIN_DIR . '/includes/controller.php';
 
+add_action( 'plugins_loaded', 'wpcf7', 1 );
+
+function wpcf7() {
+	global $wpcf7;
+
+	if ( is_object( $wpcf7 ) )
+		return;
+
+	$wpcf7 = (object) array(
+		'processing_within' => '',
+		'widget_count' => 0,
+		'unit_count' => 0,
+		'global_unit_count' => 0,
+		'result' => array() );
+}
+
+add_action( 'plugins_loaded', 'wpcf7_init_shortcode_manager', 1 );
+
+function wpcf7_init_shortcode_manager() {
+	global $wpcf7_shortcode_manager;
+
+	$wpcf7_shortcode_manager = new WPCF7_ShortcodeManager();
+}
+
 /* Loading modules */
 
 add_action( 'plugins_loaded', 'wpcf7_load_modules', 1 );
@@ -24,7 +48,7 @@ function wpcf7_load_modules() {
 		return false;
 
 	while ( ( $module = readdir( $dh ) ) !== false ) {
-		if ( substr( $module, -4 ) == '.php' )
+		if ( substr( $module, -4 ) == '.php' && substr( $module, 0, 1 ) != '.' )
 			include_once $dir . '/' . $module;
 	}
 }
@@ -46,8 +70,6 @@ function wpcf7_get_request_uri() {
 add_action( 'init', 'wpcf7_init' );
 
 function wpcf7_init() {
-	wpcf7();
-
 	// L10N
 	wpcf7_load_plugin_textdomain();
 
@@ -55,19 +77,6 @@ function wpcf7_init() {
 	wpcf7_register_post_types();
 
 	do_action( 'wpcf7_init' );
-}
-
-function wpcf7() {
-	global $wpcf7;
-
-	if ( is_object( $wpcf7 ) )
-		return;
-
-	$wpcf7 = (object) array(
-		'processing_within' => '',
-		'widget_count' => 0,
-		'unit_count' => 0,
-		'global_unit_count' => 0 );
 }
 
 function wpcf7_load_plugin_textdomain() {
@@ -141,9 +150,35 @@ function wpcf7_convert_to_cpt( $new_ver, $old_ver ) {
 			$metas = array( 'form', 'mail', 'mail_2', 'messages', 'additional_settings' );
 
 			foreach ( $metas as $meta ) {
-				update_post_meta( $post_id, $meta,
+				update_post_meta( $post_id, '_' . $meta,
 					wpcf7_normalize_newline_deep( maybe_unserialize( $row->{$meta} ) ) );
 			}
+		}
+	}
+}
+
+add_action( 'wpcf7_upgrade', 'wpcf7_prepend_underscore', 10, 2 );
+
+function wpcf7_prepend_underscore( $new_ver, $old_ver ) {
+	if ( version_compare( $old_ver, '3.0-dev', '<' ) )
+		return;
+
+	if ( ! version_compare( $old_ver, '3.3-dev', '<' ) )
+		return;
+
+	$posts = WPCF7_ContactForm::find( array(
+		'post_status' => 'any',
+		'posts_per_page' => -1 ) );
+
+	foreach ( $posts as $post ) {
+		$props = $post->get_properties();
+
+		foreach ( $props as $prop => $value ) {
+			if ( metadata_exists( 'post', $post->id, '_' . $prop ) )
+				continue;
+
+			update_post_meta( $post->id, '_' . $prop, $value );
+			delete_post_meta( $post->id, $prop );
 		}
 	}
 }

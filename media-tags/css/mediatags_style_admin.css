@@ -272,3 +272,6 @@ select#mediatag_admin_bulk_inline {
 #mediatag-roles-legend ul li {
 	margin: 5px 0;
 }
+
+/* [alx359] added to fix diagonal stacking issue in Media Gallery post edit mode */
+.media-item { float:left; }

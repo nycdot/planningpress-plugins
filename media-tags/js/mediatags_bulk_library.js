@@ -59,13 +59,23 @@ jQuery(document).ready(function(){
 		button_name = "";
 		button_name = jQuery('#media-tags-bulk-content-buttons .cancel').text();
 		if (button_name != "")
-			dialog_buttons[button_name] = function() { 
-				jQuery('#media-tags-bulk-panel input[@name=media_tags_input]:checked').attr('checked', '');
+		{
+			//dialog_buttons[button_name] = function() { 
+			//	jQuery('#media-tags-bulk-panel input[@name=media_tags_input]:checked').attr('checked', '');
 				
-				jQuery(this).dialog("close"); 
-				return false; 
+			//	jQuery(this).dialog("close"); 
+			//	return false; 
+			//}
+			
+			// http://wordpress.org/support/topic/plugin-media-tags-some-visual-aid-tags-being-applied-fix?replies=1
+			dialog_buttons[button_name] = function() {
+				//[alx359] Some visual aid when bulk tags are being applied
+				//mediatags_process_bulk_selections('library')
+				jQuery(this).addClass('ui-state-disabled');
+				if (!mediatags_process_bulk_selections('library'))
+					jQuery(this).removeClass('ui-state-disabled');
 			}
-		
+		}
 		jQuery("#media-tags-bulk-panel").dialog({
 			autoOpen: false,
 			width: 600,

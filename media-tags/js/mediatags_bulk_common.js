@@ -55,12 +55,14 @@ function mediatags_process_bulk_selections(location_type)
 		jQuery('#media-tags-error').html('<p>Please enter or select which Media Tags should be applied to the selected Media Items.</p>');
 		jQuery('#media-tags-error').focus();
 		return false;
-	}				
+	}
+// http://wordpress.org/support/topic/plugin-media-tags-media-library-inline-fix?replies=5					
+/*
 	else
 	{
 		jQuery('#media-tags-error').html('<p></p>');
 	}
-	
+*/	
 	var select_media_items = "";
 	if (location_type == "library")
 	{			
@@ -125,4 +127,7 @@ function mediatags_process_bulk_selections(location_type)
 	jQuery.post(ajaxurl, data, function(response) {
 		location.reload();
 	});
+	
+	// http://wordpress.org/support/topic/plugin-media-tags-some-visual-aid-tags-being-applied-fix?replies=1
+	return true;
 }

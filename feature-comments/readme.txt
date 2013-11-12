@@ -1,20 +1,20 @@
-=== Plugin Name ===
-Contributors: utkarsh
-Donate link: http://wpprogrammer.com
-Tags: comments
-Requires at least: 2.9
-Tested up to: 3.0
-Stable tag: trunk
+=== Featured Comments ===
+Contributors: mordauk, Utkarsh
+Donate link: http://pippinsplugins.com/support-the-site
+Tags: comments, featured comments, feature comments, Pippin's Plugins, pippinsplugins, recent comments
+Requires at least: 3.5
+Tested up to: 3.5
+Stable tag: 1.2.1
 
-Lets the admin add "featured" or "buried" css class to selected comments. Handy to highlight comments that add value to your post.
+Lets the admin add "featured" or "buried" css class to selected comments. Handy to highlight comments that add value to your post. Also includes a dedicated widget for showing recently featured comments
 
 == Description ==
 
 Lets the admin add "featured" or "buried" css class to selected comments. Handy to highlight comments that add value to your post.
 
-This plugin makes use of the commentmeta table, which was introduced in WordPress 2.9 Hence, the plugin is not compatible with versions before 2.9
+This plugin makes use of the meta_query option added in WordPress 3.5 to the WP_Comment_Query class, so it is no longer compatible with earlier versions of WordPress.
 
-This plugin also requires PHP5.
+Please report bugs and suggestions on [Github](https://github.com/pippinsplugins/Featured-Comments).
 
 == Installation ==
 
@@ -32,6 +32,60 @@ All the options will be automatically added to the edit comments table, and sing
 3. Class added to comment, as seen on the frontend (screenshot shows source viewed in Firebug)
 
 == Changelog ==
+
+= 1.2.1 =
+
+* Re-added Buried checkbox to the edit comment screen
+* Added a file-modified-time version number to the JS to ensure file is not cached between updates
+* Added a div.feature-burry-comments wrapper to the Feature | Bury links added to comments
+
+= 1.2 =
+
+* Development taken over by [Pippin Williamson](http://pippinsplugins.com)
+* NOTE: no longer compatible with WordPress versions less than 3.5
+* Replaced deprecated functions with up-to-date versions
+* Added new Featured Comments widget
+* Updated plugin class to a singleton
+
+= 1.1.1 =
+* Fixed bug, which showed feature/bury links to all users, instead of users with 'moderate_comments' capability.
+
+= 1.1 =
+* Major update
+* Anyone with 'moderate_comments' capability is now able to feature/bury comments both from the frontend and backend
+* Added support for featuring comments using ajax.
+* The edit comments section now highlights featured comments, and reduces the opacity of buried comments.
+* Fixed some E_NOTICE's
+
+= 1.0.3 =
+* Fixed a bug introduced in the last update
+
+= 1.0.2 =
+* Refactored source code
+
+= 1.0.1 =
+* Added missing screenshot files
+
+= 1.0 =
+* First version
+
+
+== Upgrade Notice ==
+
+= 1.2.1 =
+
+* Re-added Buried checkbox to the edit comment screen
+* Added a file-modified-time version number to the JS to ensure file is not cached between updates
+* Added a div.feature-burry-comments wrapper to the Feature | Bury links added to comments
+
+= 1.2 =
+
+* Development taken over by [Pippin Williamson](http://pippinsplugins.com)
+* NOTE: no longer compatible with WordPress versions less than 3.5
+* Replaced deprecated functions with up-to-date versions
+* Added new Featured Comments widget
+* Updated plugin class to a singleton
+
 = 1.1.1 =
 * Fixed bug, which showed feature/bury links to all users, instead of users with 'moderate_comments' capability.
 

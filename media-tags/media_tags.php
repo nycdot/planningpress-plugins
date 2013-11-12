@@ -4,7 +4,7 @@ Plugin Name: Media Tags
 Plugin URI: http://www.codehooligans.com/projects/wordpress/media-tags/
 Description: Provides ability to tag media/attachments via Media Management screens
 Author: Paul Menard
-Version: 3.0.4
+Version: 3.1.2.1
 Author URI: http://www.codehooligans.com
 */
 
@@ -35,10 +35,9 @@ class MediaTags {
 		$plugindir_node 						= dirname(plugin_basename(__FILE__));	
 		//$this->plugindir_url 					= get_bloginfo('wpurl') . "/wp-content/plugins/". $plugindir_node;
 		$this->plugindir_url 					= WP_CONTENT_URL . "/plugins/". $plugindir_node;
-		
-		
-	
+			
 		// Setup flags for third-party plugins we can integrate with
+		$this->thirdparty = new stdClass();
 		$this->thirdparty->google_sitemap 		= false;
 
 		$this->default_caps						= array();
@@ -195,24 +194,26 @@ class MediaTags {
 			$r['tags_compare'] = 'OR';
 
 		// First split the comma-seperated media-tags list into an array
-		$r['media_tags_array'] = split(',', $r['media_tags']);
+		$r['media_tags_array'] = explode(',', $r['media_tags']);
 		if ($r['media_tags_array'])
 		{
 			foreach($r['media_tags_array'] as $idx => $val)
 			{
-				$r['media_tags_array'][$idx] = sanitize_title_with_dashes($val);
+				//$r['media_tags_array'][$idx] = sanitize_title_with_dashes($val);
+				$r['media_tags_array'][$idx] = sanitize_title($val);
 			}
 		}
 
 		// Next split the comma-seperated media-types list into an array
 		if ($r['media_types'])
 		{
-			$r['media_types_array'] = split(',', $r['media_types']);
+			$r['media_types_array'] = explode(',', $r['media_types']);
 			if ($r['media_types_array'])
 			{
 				foreach($r['media_types_array'] as $idx => $val)
 				{
-					$r['media_types_array'][$idx] = sanitize_title_with_dashes($val);
+					//$r['media_types_array'][$idx] = sanitize_title_with_dashes($val);
+					$r['media_types_array'][$idx] = sanitize_title($val);
 				}
 			}
 		}
@@ -342,9 +343,13 @@ class MediaTags {
 				}
 
 				// If the calling system doesn't want the whole list.
-				if (($r['offset'] > 0) || ($r['numberposts'] > 0))
-					$attachment_posts = array_slice($attachment_posts, $r['offset'], $r['numberposts']);
+				//if (($r['offset'] > 0) || ($r['numberposts'] > 0))
+				//	$attachment_posts = array_slice($attachment_posts, $r['offset'], $r['numberposts']);
 				
+				//http://wordpress.org/support/topic/plugin-media-tags-get_attachments_by_media_tags-twice-offset-fix?replies=2
+				if ($r['numberposts'] > 0)
+					$attachment_posts = array_slice($attachment_posts, 0, $r['numberposts']);
+					
 				if ($r['return_type'] === "li")
 				{
 					$attachment_posts_list = "";

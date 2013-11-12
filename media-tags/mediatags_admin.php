@@ -8,9 +8,15 @@ function mediatags_admin_init()
 	add_action( 'plugins_loaded', 					'mediatag_thirdparty_support' );
 			
 	add_action( 'wp_ajax_media_tags_bulk_action', 	'media_tags_bulk_action_callback' );
-	add_filter( 'attachment_fields_to_edit', 		'mediatags_show_fields_to_edit', 11, 2 );
-	add_filter( 'attachment_fields_to_save', 		'meditags_process_attachment_fields_to_save', 11, 2 );
+
+	if ( version_compare( $wp_version, '3.5', '<' ) ) {
+		add_filter( 'attachment_fields_to_edit', 		'mediatags_show_fields_to_edit', 11, 2 );
+		add_filter( 'attachment_fields_to_save', 		'meditags_process_attachment_fields_to_save', 11, 2 );
+	}
 	add_action( 'delete_attachment', 				'mediatags_delete_attachment_proc' );
+
+	// http://wordpress.org/support/topic/plugin-media-tags-row-count-fix?replies=3
+//	add_action('parent_file', 'mediatags_edit_tags_fixes');
 
 	// Add dropdowns above Media > Library listing
 	add_action( 'restrict_manage_posts', 			'mediatags_filter_posts' );
@@ -25,6 +31,8 @@ function mediatags_admin_init()
 	add_action('export_wp', 						'mediatags_wp_export_metadata');
 	add_action('import_post_meta', 					'mediatags_wp_import_metadata', 10, 3);
 
+	add_action( 'add_meta_boxes', 					'mediatags_metaboxes' );
+	
 	$mediatag_admin_bulk_library 					= get_option('mediatag_admin_bulk_library', 'yes'); 
 	$mediatag_admin_bulk_inline 					= get_option('mediatag_admin_bulk_inline', 'yes'); 
 	
@@ -97,7 +105,7 @@ function mediatags_admin_init()
 				array('jquery'), $mediatags->plugin_version);			
 		}
 	}
-	else if (mediataga_check_url('wp-admin/media.php'))				
+	else if ((mediataga_check_url('wp-admin/media.php')) || ((version_compare($wp_version, '3.4.999', '>')) && (mediataga_check_url('wp-admin/post.php'))))
 	{
 		wp_enqueue_style( 'mediatags-stylesheet', $mediatags->plugindir_url .'/css/mediatags_style_admin.css',
 			false, $mediatags->plugin_version);
@@ -316,7 +324,7 @@ function mediatags_admin_panels()
 	add_media_page( _x("Media-Tags", 'menu label', MEDIA_TAGS_I18N_DOMAIN),
 					_x("Media-Tags", 'page label', MEDIA_TAGS_I18N_DOMAIN),
 					MEDIATAGS_MANAGE_TERMS_CAP,
-					"edit-tags.php?taxonomy=media-tags" );
+					"edit-tags.php?taxonomy=media-tags&post_type=attachment" );
 	
 	// Adds the 'Media-Tags' top-level menu panel
 	
@@ -358,24 +366,30 @@ function mediatags_admin_panels()
 function mediatags_add_default_capabilities() 
 {
 	$role = get_role('contributor');
-	$role->add_cap(MEDIATAGS_ASSIGN_TERMS_CAP);
+	if ($role)
+		$role->add_cap(MEDIATAGS_ASSIGN_TERMS_CAP);
 
 	$role = get_role('author');
-	$role->add_cap(MEDIATAGS_ASSIGN_TERMS_CAP);
+	if ($role)
+		$role->add_cap(MEDIATAGS_ASSIGN_TERMS_CAP);
 
 	$role = get_role('editor');
-	$role->add_cap(MEDIATAGS_MANAGE_TERMS_CAP);
-	$role->add_cap(MEDIATAGS_ASSIGN_TERMS_CAP);
-	$role->add_cap(MEDIATAGS_EDIT_TERMS_CAP);
-	$role->add_cap(MEDIATAGS_DELETE_TERMS_CAP);
+	if ($role) {
+		$role->add_cap(MEDIATAGS_MANAGE_TERMS_CAP);
+		$role->add_cap(MEDIATAGS_ASSIGN_TERMS_CAP);
+		$role->add_cap(MEDIATAGS_EDIT_TERMS_CAP);
+		$role->add_cap(MEDIATAGS_DELETE_TERMS_CAP);
+	}
 	
 	$role = get_role('administrator');
-	$role->add_cap(MEDIATAGS_SETTINGS_CAP);
-	$role->add_cap(MEDIATAGS_MANAGE_TERMS_CAP);
-	$role->add_cap(MEDIATAGS_ASSIGN_TERMS_CAP);
-	$role->add_cap(MEDIATAGS_EDIT_TERMS_CAP);
-	$role->add_cap(MEDIATAGS_DELETE_TERMS_CAP);	
-	$role->add_cap(MEDIATAGS_MANAGE_ROLE_CAP);	
+	if ($role) {
+		$role->add_cap(MEDIATAGS_SETTINGS_CAP);
+		$role->add_cap(MEDIATAGS_MANAGE_TERMS_CAP);
+		$role->add_cap(MEDIATAGS_ASSIGN_TERMS_CAP);
+		$role->add_cap(MEDIATAGS_EDIT_TERMS_CAP);
+		$role->add_cap(MEDIATAGS_DELETE_TERMS_CAP);	
+		$role->add_cap(MEDIATAGS_MANAGE_ROLE_CAP);	
+	}
 }
 
 function mediatags_filter_posts()
@@ -616,6 +630,10 @@ function meditags_process_attachment_fields_to_save($post, $attachment)
 //	mediatag_process_admin_forms($media_tags_action, $select_media_items, $select_media_tags, $media_tags_input);
 */		
 	
+	$taxonomy = get_taxonomy( MEDIA_TAGS_TAXONOMY );
+	if (!current_user_can($taxonomy->cap->assign_terms)) 
+		return $post;
+	
 	$media_tags_array = array();
 
 	if (isset($attachment['media_tags_checkbox']))
@@ -633,7 +651,8 @@ function meditags_process_attachment_fields_to_save($post, $attachment)
 		{
 			foreach($tags_tmp_array as $idx => $tag_val)
 			{
-				$tag_slug = sanitize_title_with_dashes($tag_val);
+				//$tag_slug = sanitize_title_with_dashes($tag_val);
+				$tag_slug = sanitize_title($tag_val);
 				
 				if ( ! ($id = term_exists( $tag_slug, MEDIA_TAGS_TAXONOMY ) ) )
 					wp_insert_term($tag_val, MEDIA_TAGS_TAXONOMY, array('slug' => $tag_slug));
@@ -672,7 +691,8 @@ function mediatag_process_admin_forms($media_tags_action, $select_media_items, $
 		{
 			foreach($tags_tmp_array as $idx => $tag_val)
 			{
-				$tag_slug = sanitize_title_with_dashes($tag_val);
+				//$tag_slug = sanitize_title_with_dashes($tag_val);
+				$tag_slug = sanitize_title($tag_val);
 
 				if ( ! ($id = term_exists( $tag_slug, MEDIA_TAGS_TAXONOMY ) ) )
 				{
@@ -836,7 +856,8 @@ function media_upload_mediatags_form($errors)
 		$type = "type=".$_REQUEST['type']."&";
 	
 		//$form_action_url = get_option('siteurl') . "/wp-admin/media-upload.php?".$type."tab=library&post_id=".$post_id;
-		$form_action_url = "media-upload.php?".$type."tab=library&post_id=".$post_id;
+		//$form_action_url = "media-upload.php?".$type."tab=library&post_id=".$post_id;
+		$form_action_url = "media-upload.php?".$type."tab=library&tab=library&post_id=".$post_id;
 	
 	?>
 	<div style="clear:both"></div>
@@ -933,8 +954,11 @@ function mediatags_library_column_row( $column_name, $id ) {
 
 	if ( $column_name == MEDIA_TAGS_TAXONOMY ) 
 	{
-		//$media_attachments =  get_objects_in_term($id, MEDIA_TAGS_TAXONOMY);
-		$media_attachments = get_the_terms( $id, MEDIA_TAGS_TAXONOMY );
+		if (function_exists('wp_get_object_terms'))
+			$media_attachments = wp_get_object_terms( $id, MEDIA_TAGS_TAXONOMY );
+		else
+			$media_attachments = get_the_terms( $id, MEDIA_TAGS_TAXONOMY );
+		
 		if ($media_attachments)
 		{
 			$media_tag_list_items = "";
@@ -1012,4 +1036,42 @@ function mediatags_get_taxonomy_labels()
 	else
 		return $labels_default;
 }
-?>
+
+// http://wordpress.org/support/topic/plugin-media-tags-row-count-fix?replies=3
+function mediatags_edit_tags_fixes($parent_file)
+{
+	//echo "parent_file=[". $parent_file ."]<br />";
+	if ( 'edit.php?post_type=attachment' == $parent_file )
+	{
+		// back-reference to Media menu, to fix proper side-menu focus
+		$parent_file = 'upload.php';	
+
+		// Give 'Show on screen' form other names, to avoid conflict with some WP filters (e.g. do not use - )
+		add_screen_option( 'per_page', array('label'  => 'Media-Tags', 'default' => 20,
+											 'option' => 'edit_mediatags_per_page',
+											 'value'  => 'edit_mediatags_per_page') );	
+
+		// Fix for 'Show on screen' form processing, to make applied rows work
+		// (code extracted from set_screen_options(), as I don't know yet how to hook this)
+		if ( isset($_POST['wp_screen_options']) && is_array($_POST['wp_screen_options']) )
+		{
+			check_admin_referer( 'screen-options-nonce', 'screenoptionnonce' );
+			if ( !$user = wp_get_current_user() ) return;
+			$option = $_POST['wp_screen_options']['option'];
+			$value  = $_POST['wp_screen_options']['value'];
+
+			// persist applied values in wp_usermeta table
+			update_user_meta($user->ID, $option, $value);
+			// redirect to set cookie
+			wp_redirect( remove_query_arg( array('pagenum', 'apage', 'paged'), wp_get_referer() ) );
+		}
+		return $parent_file;
+	}
+}
+
+function mediatags_metaboxes() {
+	add_meta_box('tagsdiv-' . MEDIA_TAGS_TAXONOMY, 
+		__( 'Media-Tags', MEDIA_TAGS_I18N_DOMAIN ), 'post_tags_meta_box', 'attachment', 'side', 'core', array( 'taxonomy' => MEDIA_TAGS_TAXONOMY ));
+}
+
+

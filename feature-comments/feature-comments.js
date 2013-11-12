@@ -1,9 +1,8 @@
-jQuery(document).ready(function(){
-	var $ = jQuery;
+jQuery(document).ready(function($){
 	$('.feature-comments').click(function(){
 		$this = $(this);
 		$.post (
-			feature_comments.ajax_url,
+			featured_comments.ajax_url,
 			{
 				'action' : 'feature_comments',
 				'do': $this.attr('data-do'),
@@ -26,13 +25,12 @@ jQuery(document).ready(function(){
 		);
 		return false;
 	});
-	
+
 	/* Set classes on Edit Comments */
 	$('.feature-comments.feature').each(function(){
 		$this = $(this);
 		$tr = $(this).parents('tr');
 		if($this.hasClass('featured')) $tr.addClass('featured');
 		if($this.hasClass('buried')) $tr.addClass('buried');
-		
 	});
 });

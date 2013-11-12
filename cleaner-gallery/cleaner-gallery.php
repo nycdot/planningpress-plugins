@@ -1,98 +1,180 @@
 <?php
 /**
  * Plugin Name: Cleaner Gallery
- * Plugin URI: http://justintadlock.com/archives/2008/04/13/cleaner-wordpress-gallery-plugin
- * Description: This plugin replaces the default gallery feature with a valid XHTML solution and offers support for multiple Lightbox-type image scripts.
- * Version: 0.8
+ * Plugin URI: http://themehybrid.com/plugins/cleaner-gallery
+ * Description: Replaces the default <code>[gallery]</code> shortcode with valid <abbr title="Hypertext Markup Language">HTML</abbr>5 markup and moves its inline styles to a proper stylesheet. Integrates with many Lightbox-type image scripts.
+ * Version: 1.0.0
  * Author: Justin Tadlock
  * Author URI: http://justintadlock.com
  *
- * Cleaner Gallery cleans up the invalid XHTML created by the default [gallery] 
- * shortcode. It was created with this purpose in mind.  But, the plugin has since
- * grown into a much larger set of functions with many options.  It integrates nicely
- * with several Lightbox-type scripts and has an options page that gives you much
- * more control over galleries across your site.
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
+ * General Public License as published by the Free Software Foundation; either version 2 of the License, 
+ * or (at your option) any later version.
  *
- * Users should follow the Codex on using the [gallery] shortcode:
- * @link http://codex.wordpress.org/Using_the_gallery_shortcode
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * Developers can learn more about the WordPress shortcode API:
- * @link http://codex.wordpress.org/Shortcode_API
+ * You should have received a copy of the GNU General Public License along with this program; if not, write 
+ * to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  *
- * This plugin has been tested and integrates with these scripts:
- * @link http://www.huddletogether.com/projects/lightbox2
- * @link http://www.digitalia.be/software/slimbox
- * @link http://www.digitalia.be/software/slimbox2
- * @link http://jquery.com/demo/thickbox
- * @link http://dolem.com/lytebox
- * @link http://orangoo.com/labs/GreyBox
- * @link http://www.nickstakenburg.com/projects/lightview
- * @link http://www.balupton.com/sandbox/jquery_lightbox
- * @link http://leandrovieira.com/projects/jquery/lightbox
- * @link http://www.laptoptips.ca/projects/wp-shutter-reloaded
- * @link http://mjijackson.com/shadowbox/index.html
- * @link http://fancy.klade.lv
- * @link http://github.com/krewenki/jquery-lightbox/tree/master
- * @link http://www.stickmanlabs.com/lightwindow
- * @link http://www.cabel.name/2008/02/fancyzoom-10.html
- * @link http://randomous.com/floatbox/home
- * @link http://colorpowered.com/colorbox
- *
- * @copyright 2008 - 2010
- * @version 0.8
- * @author Justin Tadlock
- * @link http://justintadlock.com/archives/2008/04/13/cleaner-wordpress-gallery-plugin
- * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * @package CleanerGallery
+ * @package   CleanerGallery
+ * @version   1.0.0
+ * @since     0.1.0
+ * @author    Justin Tadlock <justin@justintadlock.com>
+ * @copyright Copyright (c) 2008 - 2013, Justin Tadlock
+ * @link      http://themehybrid.com/plugins/cleaner-gallery
+ * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
-
-/* Set up the plugin. */
-add_action( 'plugins_loaded', 'cleaner_gallery_setup' );
 
 /**
- * Sets up the Cleaner Gallery plugin and loads files at the appropriate time.
+ * Sets up the Cleaner Gallery plugin.
  *
- * @since 0.8
+ * @since  1.0.0
  */
-function cleaner_gallery_setup() {
-	/* Load translations. */
-	load_plugin_textdomain( 'cleaner-gallery', false, 'cleaner-gallery/languages' );
+final class Cleaner_Gallery_Plugin {
 
-	/* Set constant path to the Cleaner Gallery plugin directory. */
-	define( 'CLEANER_GALLERY_DIR', plugin_dir_path( __FILE__ ) );
+	/**
+	 * Holds the instance of this class.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    object
+	 */
+	private static $instance;
 
-	/* Set constant path to the Cleaner Gallery plugin URL. */
-	define( 'CLEANER_GALLERY_URL', plugin_dir_url( __FILE__ ) );
+	/**
+	 * Stores the directory path for this plugin.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string
+	 */
+	private $directory_path;
 
-	if ( is_admin() )
-		require_once( CLEANER_GALLERY_DIR . 'admin.php' );
-	else
-		require_once( CLEANER_GALLERY_DIR . 'gallery.php' );
+	/**
+	 * Stores the directory URI for this plugin.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string
+	 */
+	private $directory_uri;
 
-	do_action( 'cleaner_gallery_loaded' );
+	/**
+	 * Plugin setup.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return void
+	 */
+	public function __construct() {
+
+		/* Set the properties needed by the plugin. */
+		add_action( 'plugins_loaded', array( $this, 'setup' ), 1 );
+
+		/* Internationalize the text strings used. */
+		add_action( 'plugins_loaded', array( $this, 'i18n' ), 2 );
+
+		/* Load the functions files. */
+		add_action( 'plugins_loaded', array( $this, 'includes' ), 3 );
+
+		/* Load the admin files. */
+		add_action( 'plugins_loaded', array( $this, 'admin' ), 4 );
+
+		/* Enqueue scripts and styles. */
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 15 );
+	}
+
+	/**
+	 * Defines the directory path and URI for the plugin.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return void
+	 */
+	public function setup() {
+		$this->directory_path = trailingslashit( plugin_dir_path( __FILE__ ) );
+		$this->directory_uri  = trailingslashit( plugin_dir_url(  __FILE__ ) );
+
+		/* Legacy */
+		define( 'CLEANER_GALLERY_DIR', $this->directory_path );
+		define( 'CLEANER_GALLERY_URI', $this->directory_uri  );
+	}
+
+	/**
+	 * Loads the initial files needed by the plugin.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return void
+	 */
+	public function includes() {
+
+		require_once( "{$this->directory_path}inc/gallery.php"         );
+		require_once( "{$this->directory_path}inc/default-filters.php" );
+	}
+
+	/**
+	 * Loads the translation files.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return void
+	 */
+	public function i18n() {
+
+		/* Load the translation of the plugin. */
+		load_plugin_textdomain( 'cleaner-gallery', false, 'cleaner-gallery/languages' );
+	}
+
+	/**
+	 * Loads the admin functions and files.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return void
+	 */
+	public function admin() {
+
+		if ( is_admin() )
+			require_once( "{$this->directory_path}admin/admin.php" );
+	}
+
+	/**
+	 * Enqueues scripts and styles on the front end.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return void
+	 */
+	public function enqueue_scripts() {
+
+		if ( cleaner_gallery_get_setting( 'thickbox_js' ) )
+			wp_enqueue_script( 'thickbox' );
+
+		if ( cleaner_gallery_get_setting( 'thickbox_css' ) )
+			wp_enqueue_style( 'thickbox' );
+
+		if ( !current_theme_supports( 'cleaner-gallery' ) )
+			wp_enqueue_style( 'cleaner-gallery', "{$this->directory_uri}css/gallery.min.css", null, '20130526' );
+	}
+
+	/**
+	 * Returns the instance.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return object
+	 */
+	public static function get_instance() {
+
+		if ( !self::$instance )
+			self::$instance = new self;
+
+		return self::$instance;
+	}
 }
 
-/**
- * Function for quickly grabbing settings for the plugin without having to call get_option() 
- * every time we need a setting.
- *
- * @since 0.8
- */
-function cleaner_gallery_get_setting( $option = '' ) {
-	global $cleaner_gallery;
-
-	if ( !$option )
-		return false;
-
-	if ( !isset( $cleaner_gallery->settings ) )
-		$cleaner_gallery->settings = get_option( 'cleaner_gallery_settings' );
-
-	return $cleaner_gallery->settings[$option];
-}
+Cleaner_Gallery_Plugin::get_instance();
 
 ?>
