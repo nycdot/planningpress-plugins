@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Argo Map Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.ie.css" />
+    <![endif]-->
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <div id="argo-container">
+      <div id="argo-map"></div>
+      <div id="argo-legend"></div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet-src.js"></script>
+    <script src="js/leaflet.argo.js"></script>
+    <script src="js/argo-views.js"></script>
+    <script src="js/demo-data.js"></script>
+
+    <script>
+      var mapView = new Argo.MapView({
+            el: '#argo-map',
+            map: Argo.demoOptions.map,
+            baseLayer: Argo.demoOptions.baseLayer,
+            layers: Argo.demoOptions.layers
+          }),
+          legendView = new Argo.LegendView({
+            el: '#argo-legend',
+            layers: Argo.demoOptions.layers
+          });
+
+    </script>
+
+  </body>
+</html>
