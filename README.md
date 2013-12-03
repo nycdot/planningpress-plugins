@@ -1,4 +1,4 @@
-planningpress-plugins
+Portal Plugins
 =====================
 
-Wordpress plugins used in instances of PlanningPress.  Use in conjunction with the planningpress repo.
+Wordpress plugins used in the [Transportation Feedback Portals](http://github.com/nycdot/DOT_Portal), particularly [Planningpress](https://github.com/nycdot/planningpress).
