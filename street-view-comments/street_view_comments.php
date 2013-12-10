@@ -10,15 +10,16 @@ Author: Chris Abraham and Neil Freeman
 // enqueue scripts. called in the shortcode handler (svc_show_mapper)
 function fitzgerald_scripts($localization) {
   // javascript
+  //gmaps
   wp_enqueue_script( 'gmaps', 'http://maps.googleapis.com/maps/api/js?sensor=false' );
-  wp_enqueue_script( 'jquery-ui-custom', plugins_url( 'js/lib/jquery-ui-1.8.21.custom.min.js' , __FILE__ ), array('jquery'), '1.8.21' );
-  wp_enqueue_script( 'jquery-sparkline', plugins_url( 'js/lib/jquery.sparkline-2.0.min.js' , __FILE__ ), array('jquery'). '2.0' );
+  
+  wp_enqueue_script( 'jquery-ui-custom', plugins_url( 'js/lib/jquery-ui-1.9.2.custom.min.js' , __FILE__ ), array('jquery'), '1.9.2' );
+
+  wp_enqueue_script( 'jquery-sparkline', plugins_url( 'js/lib/jquery.sparkline-2.0.min.js' , __FILE__ ), array('jquery'), '2.0' );
   wp_enqueue_script( 'json2.a', plugins_url( 'js/lib/json2.min.js' , __FILE__ ));
   wp_enqueue_script( 'underscore.1.3.3', plugins_url( 'js/lib/underscore-1.3.3.min.js' , __FILE__ ), array(), '1.3.3' );
   // doesn't work with newer backbone
   wp_enqueue_script( 'backbone.0.9.2', plugins_url( 'js/lib/backbone-0.9.2.min.js' , __FILE__ ), array('underscore.1.3.3'), '0.9.2' );
-  wp_enqueue_script( 'fitzgerald-routes', plugins_url( 'js/routes.js' , __FILE__ ), array('gmaps', 'backbone.0.9.2'), '0.4' );
-  wp_enqueue_script( 'fitzgerald-views', plugins_url( 'js/views.js', __FILE__ ), array('gmaps', 'backbone.0.9.2'), '0.4' );
 
   // this one right here needs to be localized!
   wp_enqueue_script( 'fitzgerald-display', plugins_url( 'js/display.js', __FILE__ ), array('fitzgerald-views'), '0.4' );
@@ -29,8 +30,12 @@ function fitzgerald_scripts($localization) {
     wp_enqueue_script('html5shiv','http://html5shiv.googlecode.com/svn/trunk/html5.js');
   }
 
+  // our scripts
+  wp_enqueue_script( 'fitzgerald-routes', plugins_url( 'js/routes.js' , __FILE__ ), array('gmaps', 'backbone.0.9.2'), '0.4' );
+  wp_enqueue_script( 'fitzgerald-views', plugins_url( 'js/views.js', __FILE__ ), array('gmaps', 'backbone.0.9.2'), '0.4' );
+
   // css
-  wp_enqueue_style( 'jquery-ui-custom-css', plugins_url( 'js/lib/jquery-ui-1.8.21.custom.css' , __FILE__ ) );
+  wp_enqueue_style( 'jquery-ui-custom-css', plugins_url( 'js/lib/jquery-ui-1.9.2.custom.min.css' , __FILE__ ) );
   wp_enqueue_style( 'fitzgerald-css', plugins_url( 'css/style.css' , __FILE__ ) );
   wp_enqueue_style( 'swanky-fonts', 'http://fonts.googleapis.com/css?family=Swanky+and+Moo+Moo|Shadows+Into+Light|Loved+by+the+King' );
 
@@ -60,6 +65,7 @@ function svc_post_comment($post_id, $heading, $pitch, $zoom, $desc) {
     'comment_approved' => '1'
   );
 
+  // produces a Notice because of missing keys in $data
   $comment_id = wp_new_comment($data);
 
   add_comment_meta($comment_id, 'pitch', $pitch, true);
@@ -296,7 +302,7 @@ function svc_save_postdata( $post_id ) {
   // verify this came from the our screen and with proper authorization,
   // because save_post can be triggered at other times
 
-  if ( !wp_verify_nonce( $_POST['svc_noncename'], plugin_basename( __FILE__ ) ) )
+  if ( !isset($_POST['svc_noncename']) || !wp_verify_nonce( $_POST['svc_noncename'], plugin_basename( __FILE__ ) ) )
       return;
 
 

@@ -6,7 +6,7 @@
     url: settings.backbone_url
   });
 
-  F.FeedbackModel = Backbone.Model.extend({
+  F.Comment = Backbone.Model.extend({
     url: settings.feedback_url
   });
 
@@ -23,7 +23,6 @@
     var mapSlider = new F.NavigatorView({
       el: '.dot-slider', collection: collection
     });
-
     var tooltip = new F.TooltipView({
       el: '.dot-tooltip-comments', collection: collection
     });
@@ -41,6 +40,7 @@
       colors: ['yellow', 'blue', 'magenta'],
       collection: collection
     });
+
 
     var streetview = new F.StreetviewView({
       el: '#dot-sv',
@@ -60,7 +60,7 @@
     });
 
     // console.log('got streetview', streetview);
-
+    
     var feedbackForm = new F.FeedbackFormView({
       el: '.dot-survey-form',
       showFormEl: '#dot-add-feedback',
@@ -74,7 +74,7 @@
         this.$el.html(settings.mainstreet + ' &amp; ' + title);
       }
     });
-
+  
     // Fetch the location records
     collection.fetch({
       success: function(intersections, res) {

@@ -10,6 +10,8 @@ var Fitzgerald = Fitzgerald || {};
     if (model) {
       this.locationModel = model;
       this.render();
+    } else {
+      console.log('no model', this);
     }
   }
 
@@ -167,7 +169,7 @@ var Fitzgerald = Fitzgerald || {};
       var self = this;
           feedback.intersection_id = self.locationModel.get('id');
 
-      new F.FeedbackModel().save(feedback, {
+      new F.Comment().save(feedback, {
         success: function (model, response) {
           // Copy the array
           var allFeedback = self.locationModel.get('feedback').slice();
@@ -378,12 +380,9 @@ var Fitzgerald = Fitzgerald || {};
       F.on('locationupdatebygraph', this.onLocationUpdate, this);
       this.collection.bind('change', this.render, this);
     },
-    onLocationUpdate: function(model) {
-      if (model) {
-        this.locationModel = model;
-        this.render();
-      }
-    },
+
+    onLocationUpdate: locationUpdate,
+
     render: function(){
       var percent = this.collection.indexOf(this.locationModel) / this.collection.length,
           count = this.locationModel.get('feedback').length,
@@ -454,4 +453,5 @@ var Fitzgerald = Fitzgerald || {};
       this.$el.slider('value', this.collection.indexOf(this.locationModel));
     }
   });
+
 })(Fitzgerald, jQuery);
