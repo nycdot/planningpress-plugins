@@ -61,8 +61,6 @@ if( !class_exists( 'Attachments' ) ) :
             $plugin         = 'attachments/index.php';
 
             // includes
-            include_once( ATTACHMENTS_DIR . 'upgrade.php' );
-            include_once( ATTACHMENTS_DIR . '/classes/class.attachments.legacy.php' );
             include_once( ATTACHMENTS_DIR . '/classes/class.attachments.search.php' );
             include_once( ATTACHMENTS_DIR . '/classes/class.field.php' );
 
@@ -625,8 +623,8 @@ if( !class_exists( 'Attachments' ) ) :
         function setup_instances()
         {
             // implement our default instance if appropriate
-            if( !defined( 'ATTACHMENTS_DEFAULT_INSTANCE' ) )
-                $this->register();
+            // if( !defined( 'ATTACHMENTS_DEFAULT_INSTANCE' ) )
+            //     $this->register();
 
             // facilitate user-defined instance registration
             do_action( 'attachments_register', $this );
@@ -760,7 +758,7 @@ if( !class_exists( 'Attachments' ) ) :
                         editframe;
 
                     $element.on( 'click', '.attachments-invoke', function( event ) {
-                        var attachment;
+                        var attachment = { attributes: {} };
 
                         event.preventDefault();
 
@@ -769,14 +767,14 @@ if( !class_exists( 'Attachments' ) ) :
                             alert('<?php _e( "Currently limited to", "attachments" ); ?> ' + limit);
                             return false;
                         }
-
+                        /*
                         // if the frame already exists, open it
                         if ( attachmentsframe ) {
                             attachmentsframe.open();
                             attachmentsframe.content.mode(router);
                             return;
                         }
-
+                        
                         // set our settings
                         attachmentsframe = wp.media({
 
@@ -805,6 +803,7 @@ if( !class_exists( 'Attachments' ) ) :
                             if ( ! selection )
                                 return;
 
+                            */
                             // compile our Underscore template using Mustache syntax
                             _.templateSettings = {
                                 variable : 'attachments',
@@ -814,7 +813,7 @@ if( !class_exists( 'Attachments' ) ) :
                             var template = _.template($('script#tmpl-attachments-<?php echo $instance->name; ?>').html());
 
                             // loop through the selected files
-                            selection.each( function( attachment ) {
+                            // selection.each( function( attachment ) {
 
                                 // make sure we respect the limit
                                 if( limit > -1 && existing >= limit ){
@@ -825,20 +824,20 @@ if( !class_exists( 'Attachments' ) ) :
                                 attachment.attributes.attachment_uid = attachments_uniqid( 'attachmentsjs' );
 
                                 // by default use the generic icon
-                                attachment.attributes.attachment_thumb = attachment.attributes.icon;
+                                // attachment.attributes.attachment_thumb = attachment.attributes.icon;
 
                                 // only thumbnails have sizes which is what we're on the hunt for
                                 // TODO: this is a mess
-                                if(attachments_isset(attachment.attributes)){
-                                    if(attachments_isset(attachment.attributes.sizes)){
-                                        if(attachments_isset(attachment.attributes.sizes.thumbnail)){
-                                            if(attachments_isset(attachment.attributes.sizes.thumbnail.url)){
-                                                // use the thumbnail
-                                                attachment.attributes.attachment_thumb = attachment.attributes.sizes.thumbnail.url;
-                                            }
-                                        }
-                                    }
-                                }
+                                // if(attachments_isset(attachment.attributes)){
+                                //     if(attachments_isset(attachment.attributes.sizes)){
+                                //         if(attachments_isset(attachment.attributes.sizes.thumbnail)){
+                                //             if(attachments_isset(attachment.attributes.sizes.thumbnail.url)){
+                                //                 // use the thumbnail
+                                //                 attachment.attributes.attachment_thumb = attachment.attributes.sizes.thumbnail.url;
+                                //             }
+                                //         }
+                                //     }
+                                // }
 
                                 var templateData = attachment.attributes;
 
@@ -856,14 +855,8 @@ if( !class_exists( 'Attachments' ) ) :
                                 // see if we need to set a default
                                 // TODO: can we tie this into other field types (select, radio, checkbox)?
                                 $element.find('.attachments-attachment:last .attachments-fields input, .attachments-attachment:last .attachments-fields textarea').each(function(){
-                                    if($(this).data('default')){
-                                        var meta_for_default = $(this).data('default');
-                                        if(attachments_isset(attachment.attributes)){
-                                            if(attachments_isset(attachment.attributes[meta_for_default])){
-                                                $(this).val(attachment.attributes[meta_for_default]);
-                                            }
-                                        }
-                                    }
+                                    if($(this).data('default'))
+                                        $(this).val( $(this).data('default') );
                                 });
 
                                 $('body').trigger('attachments/new');
@@ -872,15 +865,16 @@ if( !class_exists( 'Attachments' ) ) :
                                 if(!attachments_isset(attachment.attributes.width)||!attachments_isset(attachment.attributes.height)){
                                     $element.find('.attachments-attachment:last .dimensions').hide();
                                 }
-                            });
-                        });
+                            // });
+                        // });
 
                         // open the frame
-                        attachmentsframe.open();
-                        attachmentsframe.content.mode(router);
+                        // attachmentsframe.open();
+                        // attachmentsframe.content.mode(router);
 
-                    });
-
+                    }); // $element.on(
+    
+                    /*
                     $element.on( 'click', '.edit-attachment-asset', function( event ) {
 
                         event.preventDefault();
@@ -945,6 +939,7 @@ if( !class_exists( 'Attachments' ) ) :
                         editframe.open();
                         editframe.content.mode(router);
                     } );
+                    */
 
                     $element.on( 'click', '.delete-attachment a', function( event ) {
 
@@ -966,7 +961,6 @@ if( !class_exists( 'Attachments' ) ) :
                                 targetAttachment.remove();
                             }
                         );
-
                     } );
 
                 });
@@ -989,6 +983,7 @@ if( !class_exists( 'Attachments' ) ) :
                 'textarea'  => ATTACHMENTS_DIR . 'classes/fields/class.field.textarea.php',
                 'select'    => ATTACHMENTS_DIR . 'classes/fields/class.field.select.php',
                 'wysiwyg'   => ATTACHMENTS_DIR . 'classes/fields/class.field.wysiwyg.php',
+                'date'   => ATTACHMENTS_DIR . 'classes/fields/class.field.date.php',
             );
 
             // support custom field types
@@ -1344,21 +1339,21 @@ if( !class_exists( 'Attachments' ) ) :
                             $attachment_meta        = wp_get_attachment_metadata( $attachment->id );
 
                             // only images return the 'file' key
-                            if( !isset( $attachment_meta['file'] ))
-                                $attachment_meta['file'] = get_attached_file( $attachment->id );
+                            // if( !isset( $attachment_meta['file'] ))
+                            //     $attachment_meta['file'] = get_attached_file( $attachment->id );
 
-														$filename = explode( "/", $attachment_meta['file'] );
+							// $filename = explode( "/", $attachment_meta['file'] );
 
-                            $attachment->width      = isset( $attachment_meta['width'] ) ? $attachment_meta['width'] : null;
-                            $attachment->height     = isset( $attachment_meta['height'] ) ? $attachment_meta['height'] : null;
-                            $attachment->filename   = basename( $attachment_meta['file'] );
+                            // $attachment->width      = isset( $attachment_meta['width'] ) ? $attachment_meta['width'] : null;
+                            // $attachment->height     = isset( $attachment_meta['height'] ) ? $attachment_meta['height'] : null;
+                            // $attachment->filename   = basename( $attachment_meta['file'] );
 
-                            $attachment_mime        = explode( '/', get_post_mime_type( $attachment->id ) );
-                            $attachment->type       = isset( $attachment_mime[0] ) ? $attachment_mime[0] : null;
-                            $attachment->subtype    = isset( $attachment_mime[1] ) ? $attachment_mime[1] : null;
+                            // $attachment_mime        = explode( '/', get_post_mime_type( $attachment->id ) );
+                            // $attachment->type       = isset( $attachment_mime[0] ) ? $attachment_mime[0] : null;
+                            // $attachment->subtype    = isset( $attachment_mime[1] ) ? $attachment_mime[1] : null;
                         }
                     ?>
-
+<?php /*
                     <div class="attachment-meta media-sidebar">
                         <?php
                             $thumbnail = isset( $attachment->id ) ? wp_get_attachment_image_src( $attachment->id, 'thumbnail', true ) : false;
@@ -1378,7 +1373,7 @@ if( !class_exists( 'Attachments' ) ) :
                             <div class="attachments-attachment-fields-toggle"><a href="#"><?php _e( 'Toggle Fields', 'attachments' ); ?></a></div>
                         </div>
                     </div>
-
+*/ ?>
                     <div class="attachments-handle"><img src="<?php echo trailingslashit( $this->url ) . 'images/handle.gif'; ?>" alt="Handle" width="20" height="20" /></div>
 
                     <div class="attachments-fields">
@@ -1554,7 +1549,8 @@ if( !class_exists( 'Attachments' ) ) :
 		                    }
 	                  }
 
-		                $attachment_exists = isset( $attachment['id'] ) ? get_post( absint( $attachment['id'] ) ) : false;
+		                // $attachment_exists = isset( $attachment['id'] ) ? get_post( absint( $attachment['id'] ) ) : false;
+                        $attachment_exists = true;
                     // make sure the attachment exists
                     if( $attachment_exists )
                     {
@@ -1860,8 +1856,9 @@ if( !class_exists( 'Attachments' ) ) :
          * @since 3.0
          */
         function options_page()
-        {
-            include_once( ATTACHMENTS_DIR . '/views/options.php' );
+        {   
+            // removed since tfp-attachments doesn't have any legacy data
+            // include_once( ATTACHMENTS_DIR . '/views/options.php' );
         }
 
     }

@@ -42,7 +42,7 @@ if ( !class_exists( 'Attachments_Field' ) ) :
             $this->value    = $value;
             $this->default  = '';
             $this->meta     = $meta;
-            $this->defaults = array( 'title', 'caption', 'alt', 'description' ); // WordPress-specific Media meta
+            // $this->defaults = array( 'title', 'caption', 'alt', 'description' ); // WordPress-specific Media meta
             // TODO: determine how to integrate with custom metadata that was added to Media
         }
 
@@ -102,8 +102,8 @@ if ( !class_exists( 'Attachments_Field' ) ) :
          */
         function set_field_default( $default = '' )
         {
-            if( is_string( $default ) && !empty( $default ) && in_array( strtolower( $default ), $this->defaults ) )
-                $this->default = strtolower( $default );
+            if( is_string( $default ) && !empty( $default ) )
+                $this->default = $default;
         }
 
 
