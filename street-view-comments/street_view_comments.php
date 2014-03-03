@@ -302,7 +302,7 @@ function svc_save_postdata( $post_id ) {
   // verify this came from the our screen and with proper authorization,
   // because save_post can be triggered at other times
 
-  if ( !isset($_POST['svc_noncename']) || !wp_verify_nonce( $_POST['svc_noncename'], plugin_basename( __FILE__ ) ) )
+  if ( !array_key_exists('svc_noncename', $_POST) || !wp_verify_nonce( $_POST['svc_noncename'], plugin_basename( __FILE__ ) ) )
       return;
 
 
